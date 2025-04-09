@@ -15,7 +15,9 @@ import org.jfree.data.xy.XYSeriesCollection;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * GraphGenerator creates a line chart visualizing the scaling behavior
@@ -40,10 +42,15 @@ public class GraphGenerator {
                                      List<LCSResult> bruteForceResults,
                                      String outputPath) {
 
-        if (dynamicResults == null || bruteForceResults == null ||
-                dynamicResults.size() != bruteForceResults.size()) {
-            System.err.println("Error: Input result lists are null or mismatched in size.");
+        if (dynamicResults == null || bruteForceResults == null) {
+            System.err.println("Error: One of the result lists is null.");
             return;
+        }
+
+        // Map brute-force results by label for safe lookup
+        Map<String, LCSResult> bruteMap = new HashMap<>();
+        for (LCSResult result : bruteForceResults) {
+            bruteMap.put(result.getComparisonLabel(), result);
         }
 
         // === Fit theoretical models to actual data ===
@@ -62,22 +69,24 @@ public class GraphGenerator {
         XYSeries fitted2N = new XYSeries("Fitted: c·2ⁿ");
 
         // === Populate data ===
-        for (int i = 0; i < dynamicResults.size(); i++) {
-            LCSResult dyn = dynamicResults.get(i);
-            LCSResult bf = bruteForceResults.get(i);
+        for (LCSResult dyn : dynamicResults) {
+            String label = dyn.getComparisonLabel();
+            LCSResult bf = bruteMap.get(label);
 
             double avgN = (dyn.getFirstInput().length() + dyn.getSecondInput().length()) / 2.0;
             long dynComp = dyn.getMetrics().getComparisonCount();
-            long bfComp = bf.getMetrics().getComparisonCount();
 
             dynActual.add(avgN, dynComp);
-            bfActual.add(avgN, bfComp);
-
             expectedN2.add(avgN, Math.pow(avgN, 2));
-            expected2N.add(avgN, Math.pow(2, avgN));
-
             fittedN2.add(avgN, cDynamic * Math.pow(avgN, 2));
-            fitted2N.add(avgN, cBrute * Math.pow(2, avgN));
+
+            // Only include brute-force values if available
+            if (bf != null) {
+                long bfComp = bf.getMetrics().getComparisonCount();
+                bfActual.add(avgN, bfComp);
+                expected2N.add(avgN, Math.pow(2, avgN));
+                fitted2N.add(avgN, cBrute * Math.pow(2, avgN));
+            }
         }
 
         // === Build dataset ===
@@ -121,13 +130,12 @@ public class GraphGenerator {
         plot.setRangeGridlinePaint(Color.GRAY);
 
         // === Annotate actual values ===
-        for (int i = 0; i < dynamicResults.size(); i++) {
-            LCSResult dyn = dynamicResults.get(i);
-            LCSResult bf = bruteForceResults.get(i);
+        for (LCSResult dyn : dynamicResults) {
+            String label = dyn.getComparisonLabel();
+            LCSResult bf = bruteMap.get(label); // May be null
 
             double avgN = (dyn.getFirstInput().length() + dyn.getSecondInput().length()) / 2.0;
             long dynComp = dyn.getMetrics().getComparisonCount();
-            long bfComp = bf.getMetrics().getComparisonCount();
 
             // Dynamic annotation
             XYTextAnnotation dynNote = new XYTextAnnotation("Dyn: " + dynComp, avgN, dynComp);
@@ -136,12 +144,15 @@ public class GraphGenerator {
             dynNote.setTextAnchor(TextAnchor.BOTTOM_RIGHT);
             plot.addAnnotation(dynNote);
 
-            // Brute force annotation
-            XYTextAnnotation bfNote = new XYTextAnnotation("BF: " + bfComp, avgN, bfComp);
-            bfNote.setPaint(Color.RED);
-            bfNote.setFont(new Font("SansSerif", Font.PLAIN, 10));
-            bfNote.setTextAnchor(TextAnchor.BOTTOM_LEFT);
-            plot.addAnnotation(bfNote);
+            // Brute force annotation (only if data exists)
+            if (bf != null) {
+                long bfComp = bf.getMetrics().getComparisonCount();
+                XYTextAnnotation bfNote = new XYTextAnnotation("BF: " + bfComp, avgN, bfComp);
+                bfNote.setPaint(Color.RED);
+                bfNote.setFont(new Font("SansSerif", Font.PLAIN, 10));
+                bfNote.setTextAnchor(TextAnchor.BOTTOM_LEFT);
+                plot.addAnnotation(bfNote);
+            }
         }
 
         // === Save as PNG ===
