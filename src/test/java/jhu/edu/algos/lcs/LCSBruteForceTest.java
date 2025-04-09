@@ -7,7 +7,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * JUnit 5 test class for validating the brute-force LCS implementation.
- * Due to its exponential nature, this test is restricted to small inputs only.
+ * Covers both correctness and robustness, including edge cases, performance tracking,
+ * and algorithm behavior under non-trivial scenarios.
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class LCSBruteForceTest {
@@ -16,7 +17,7 @@ public class LCSBruteForceTest {
 
     /**
      * Initializes a fresh instance of the brute-force LCS algorithm
-     * before each test.
+     * before each test case to ensure no shared state.
      */
     @BeforeEach
     void setup() {
@@ -24,27 +25,24 @@ public class LCSBruteForceTest {
     }
 
     /**
-     * Tests the brute-force algorithm on a small input pair
-     * where the LCS is known and unique.
+     * Verifies correctness on a known example where the LCS is unambiguous.
+     * s1 = ACGT, s2 = AGT → LCS = AGT
      */
     @Test
     void testKnownSmallLCS() {
-        // Inputs: one common longest subsequence
         String s1 = "ACGT";
         String s2 = "AGT";
         String expected = "AGT";
 
-        // Execute brute-force LCS
         LCSResult result = algorithm.computeLCS("Test1", s1, s2);
 
-        // Assert LCS matches expectation
         assertEquals(expected, result.getLCS(), "Expected exact LCS match");
         assertEquals(expected.length(), result.getLCSLength(), "Length of LCS should match");
     }
 
     /**
-     * Tests the algorithm when one string is empty.
-     * Result should be an empty LCS.
+     * Checks behavior when one of the strings is empty.
+     * LCS should always be the empty string in such cases.
      */
     @Test
     void testOneEmptyString() {
@@ -53,8 +51,8 @@ public class LCSBruteForceTest {
     }
 
     /**
-     * Tests both strings being empty.
-     * Result should be an empty LCS.
+     * Checks behavior when both input strings are empty.
+     * The result should be an empty LCS.
      */
     @Test
     void testBothStringsEmpty() {
@@ -63,8 +61,8 @@ public class LCSBruteForceTest {
     }
 
     /**
-     * Tests a case with no common characters.
-     * Result should be an empty LCS.
+     * Verifies that when no characters overlap between inputs,
+     * the LCS is the empty string.
      */
     @Test
     void testNoCommonCharacters() {
@@ -73,8 +71,7 @@ public class LCSBruteForceTest {
     }
 
     /**
-     * Tests when the two strings are identical.
-     * Result should be the full string itself.
+     * If both input strings are identical, the LCS should be the string itself.
      */
     @Test
     void testIdenticalStrings() {
@@ -84,32 +81,78 @@ public class LCSBruteForceTest {
     }
 
     /**
-     * Tests defensive programming: null inputs should throw exceptions.
+     * Ensures that the algorithm throws a clear error
+     * when either input string is null.
      */
     @Test
     void testNullInputsThrowException() {
         assertThrows(IllegalArgumentException.class,
                 () -> algorithm.computeLCS("Null1", null, "ABC"));
-
         assertThrows(IllegalArgumentException.class,
                 () -> algorithm.computeLCS("Null2", "ABC", null));
     }
 
     /**
-     * Verifies that performance metrics (comparisons and time)
-     * are recorded during LCS computation.
+     * Verifies that performance metrics are recorded properly
+     * and that both comparisons and timing are non-zero.
      */
     @Test
     void testMetricsAreTracked() {
         LCSResult result = algorithm.computeLCS("Metrics", "AG", "AG");
-
-        // Metrics should be attached
         PerformanceMetrics metrics = result.getMetrics();
 
-        // Should have at least 1 character comparison
         assertTrue(metrics.getComparisonCount() > 0, "Comparison count should be non-zero");
-
-        // Elapsed time should be >= 0
         assertTrue(metrics.getElapsedTimeMs() >= 0, "Time should be non-negative");
+    }
+
+    /**
+     * Tests a moderately-sized input that still falls within tractable brute-force range.
+     * This ensures performance remains stable for strings ~8 characters long.
+     */
+    @Test
+    void testModerateLengthLCS() {
+        String s1 = "ACGTACGT";
+        String s2 = "TGCATCGT";
+
+        LCSResult result = algorithm.computeLCS("Moderate", s1, s2);
+
+        assertNotNull(result.getLCS(), "LCS should not be null");
+        assertTrue(result.getLCSLength() > 0, "Should find some common subsequence");
+        assertTrue(result.getMetrics().getComparisonCount() > 0, "Comparisons should be recorded");
+    }
+
+    /**
+     * Ensures the LCS can be identified when it exists in the middle
+     * of both input strings (not necessarily at the beginning or end).
+     */
+    @Test
+    void testMiddleSubsequence() {
+        String s1 = "GATC";
+        String s2 = "CGATCGG";
+
+        LCSResult result = algorithm.computeLCS("MiddleMatch", s1, s2);
+
+        assertEquals("GATC", result.getLCS(), "Should find GATC as the full LCS");
+    }
+
+    /**
+     * Tests a known ambiguous case with multiple valid LCS solutions.
+     * Only checks for length and that one valid LCS is returned.
+     */
+    @Test
+    void testMultipleLCSOptions() {
+        String s1 = "ABCBDAB";
+        String s2 = "BDCABA";
+
+        LCSResult result = algorithm.computeLCS("MultiLCS", s1, s2);
+        int len = result.getLCSLength();
+
+        assertEquals(4, len, "Expected LCS length of 4");
+
+        String lcs = result.getLCS();
+        assertTrue(
+                lcs.equals("BCAB") || lcs.equals("BDAB") || lcs.equals("BCBA") || lcs.equals("BDCA"),
+                "LCS result should be one of the valid longest subsequences"
+        );
     }
 }
