@@ -41,38 +41,38 @@ public class ScalingBenchmarkTest {
     }
 
     /**
-     * Tests that running the benchmark without the --plot flag
-     * generates only the CSV file and no graph image.
+     * Tests that running the benchmark without plot generation
+     * creates only the CSV file.
      */
     @Test
-    void testBenchmarkWithoutPlotGeneratesCSV() throws Exception {
-        ScalingBenchmark.main(new String[]{});
+    void testRunWithoutPlotGeneratesCSVOnly() throws Exception {
+        ScalingBenchmark.run(CSV_PATH, PLOT_PATH, false);
 
         assertTrue(Files.exists(Path.of(CSV_PATH)), "Expected CSV file to be generated.");
-        assertFalse(Files.exists(Path.of(PLOT_PATH)), "Graph should not be generated without --plot.");
+        assertFalse(Files.exists(Path.of(PLOT_PATH)), "Plot image should not be generated without flag.");
 
         List<String> lines = Files.readAllLines(Path.of(CSV_PATH));
-        assertFalse(lines.isEmpty(), "CSV should contain at least the header.");
-        assertTrue(lines.get(0).startsWith("Length,Dynamic_Comparisons"), "Header should be present and correct.");
-        assertTrue(lines.size() > 1, "CSV should contain at least one row of results.");
+        assertFalse(lines.isEmpty(), "CSV should contain content.");
+        assertTrue(lines.get(0).startsWith("Length,Dynamic_Comparisons"), "CSV should have correct header.");
+        assertTrue(lines.size() > 1, "CSV should have result rows.");
     }
 
     /**
-     * Tests that the --plot flag causes a plot to be created in addition to CSV.
+     * Tests that plot generation flag produces both CSV and PNG outputs.
      */
     @Test
-    void testBenchmarkWithPlotGeneratesGraph() throws Exception {
-        ScalingBenchmark.main(new String[]{"--plot"});
+    void testRunWithPlotGeneratesBothOutputs() throws Exception {
+        ScalingBenchmark.run(CSV_PATH, PLOT_PATH, true);
 
         assertTrue(Files.exists(Path.of(CSV_PATH)), "CSV file should be generated.");
-        assertTrue(Files.exists(Path.of(PLOT_PATH)), "Graph image should be generated when using --plot.");
+        assertTrue(Files.exists(Path.of(PLOT_PATH)), "Plot image should be generated.");
     }
 
     /**
-     * Ensures that unrecognized flags do not cause crashes or exceptions.
+     * Tests that unknown flags passed to main() do not break execution.
      */
     @Test
-    void testBenchmarkHandlesInvalidFlagsGracefully() {
-        assertDoesNotThrow(() -> ScalingBenchmark.main(new String[]{"--banana"}), "Unknown flags should not cause crashes.");
+    void testMainHandlesUnknownFlagsSafely() {
+        assertDoesNotThrow(() -> ScalingBenchmark.main(new String[]{"--banana"}));
     }
 }

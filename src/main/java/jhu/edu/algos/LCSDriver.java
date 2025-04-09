@@ -14,17 +14,17 @@ import java.util.*;
 public class LCSDriver {
 
     /**
-     * CLI entry point.
-     * Exits if arguments are missing or runtime error occurs.
+     * CLI entry point for running pairwise LCS comparisons.
+     * Accepts two arguments: input file and output file.
      */
     public static void main(String[] args) {
-        if (args.length == 0) {
-            System.err.println("Usage: java LCSDriver <input_file>");
+        if (args.length != 2) {
+            System.err.println("Usage: java LCSDriver <input_file.txt> <output_file.txt>");
             System.exit(1);
         }
 
         try {
-            runFromFile(args[0]); // Reusable logic for testing or CLI
+            runFromFile(args[0], args[1]);
         } catch (IllegalArgumentException e) {
             System.err.println("Input Error: " + e.getMessage());
             System.exit(1);
@@ -36,14 +36,13 @@ public class LCSDriver {
 
     /**
      * Runs the LCS comparison on all pairwise combinations of sequences from the input file.
-     * This method does not exit the JVM and is suitable for testing.
+     * Results are written to both the console and the specified output file.
      *
-     * @param inputFile Path to the input file.
+     * @param inputFile  Path to the input file (must contain at least two sequences).
+     * @param outputFile Path to the output file (.txt) where results are saved.
      * @throws Exception if the input is invalid or comparison fails.
      */
-    public static void runFromFile(String inputFile) throws Exception {
-        String outputFile = inputFile.replaceAll("\\.txt$", "") + "_output.txt";
-
+    public static void runFromFile(String inputFile, String outputFile) throws Exception {
         // Step 1: Load and validate input sequences
         Map<String, String> inputSequences = SequenceInputHandler.readSequencesFromFile(inputFile);
 
@@ -59,7 +58,7 @@ public class LCSDriver {
         AbstractLCS dynAlg = new LCSDynamic();
         AbstractLCS bruteAlg = new LCSBruteForce();
 
-        // Step 3: Compute pairwise comparisons (unique pairs only)
+        // Step 3: Compute all pairwise LCS results
         for (int i = 0; i < keys.size(); i++) {
             for (int j = i + 1; j < keys.size(); j++) {
                 String k1 = keys.get(i);
@@ -77,7 +76,7 @@ public class LCSDriver {
             }
         }
 
-        // Step 4: Format output (console + file)
+        // Step 4: Output results to file and console
         OutputFormatter.writeResults(inputSequences, dynamicResults, bruteForceResults, outputFile);
     }
 }
