@@ -15,18 +15,13 @@ import org.jfree.data.xy.XYSeriesCollection;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * GraphGenerator creates a line chart visualizing the scaling behavior
  * of the LCS problem under dynamic programming vs. brute force.
- * It includes:
- * - Actual comparison counts
- * - Theoretical O(n²) and O(2ⁿ) curves
- * - Fitted curves based on observed constants
- * - Data point annotations for each observed result
  */
 public class GraphGenerator {
 
@@ -47,15 +42,22 @@ public class GraphGenerator {
             return;
         }
 
-        // Map brute-force results by label for safe lookup
+        // === Map brute-force results by label (safely skip nulls) ===
         Map<String, LCSResult> bruteMap = new HashMap<>();
         for (LCSResult result : bruteForceResults) {
-            bruteMap.put(result.getComparisonLabel(), result);
+            if (result != null) {
+                bruteMap.put(result.getComparisonLabel(), result);
+            }
         }
+
+        // === Filter out nulls before curve fitting ===
+        List<LCSResult> cleanedBrute = bruteForceResults.stream()
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
 
         // === Fit theoretical models to actual data ===
         double cDynamic = CurveFitter.fitPowerLaw(dynamicResults, 2.0);
-        double cBrute = CurveFitter.fitExponential(bruteForceResults);
+        double cBrute = cleanedBrute.isEmpty() ? 0.0 : CurveFitter.fitExponential(cleanedBrute);
 
         System.out.printf("Fitted constant for Dynamic (T ≈ c·n²): %.5f%n", cDynamic);
         System.out.printf("Fitted constant for Brute Force (T ≈ c·2ⁿ): %.5f%n", cBrute);
@@ -71,7 +73,7 @@ public class GraphGenerator {
         // === Populate data ===
         for (LCSResult dyn : dynamicResults) {
             String label = dyn.getComparisonLabel();
-            LCSResult bf = bruteMap.get(label);
+            LCSResult bf = bruteMap.get(label);  // May be null
 
             double avgN = (dyn.getFirstInput().length() + dyn.getSecondInput().length()) / 2.0;
             long dynComp = dyn.getMetrics().getComparisonCount();
@@ -80,7 +82,6 @@ public class GraphGenerator {
             expectedN2.add(avgN, Math.pow(avgN, 2));
             fittedN2.add(avgN, cDynamic * Math.pow(avgN, 2));
 
-            // Only include brute-force values if available
             if (bf != null) {
                 long bfComp = bf.getMetrics().getComparisonCount();
                 bfActual.add(avgN, bfComp);
@@ -91,12 +92,12 @@ public class GraphGenerator {
 
         // === Build dataset ===
         XYSeriesCollection dataset = new XYSeriesCollection();
-        dataset.addSeries(dynActual);     // Series 0
-        dataset.addSeries(bfActual);      // Series 1
-        dataset.addSeries(expectedN2);    // Series 2
-        dataset.addSeries(expected2N);    // Series 3
-        dataset.addSeries(fittedN2);      // Series 4
-        dataset.addSeries(fitted2N);      // Series 5
+        dataset.addSeries(dynActual);
+        dataset.addSeries(bfActual);
+        dataset.addSeries(expectedN2);
+        dataset.addSeries(expected2N);
+        dataset.addSeries(fittedN2);
+        dataset.addSeries(fitted2N);
 
         // === Create chart ===
         JFreeChart chart = ChartFactory.createXYLineChart(
@@ -132,7 +133,7 @@ public class GraphGenerator {
         // === Annotate actual values ===
         for (LCSResult dyn : dynamicResults) {
             String label = dyn.getComparisonLabel();
-            LCSResult bf = bruteMap.get(label); // May be null
+            LCSResult bf = bruteMap.get(label);
 
             double avgN = (dyn.getFirstInput().length() + dyn.getSecondInput().length()) / 2.0;
             long dynComp = dyn.getMetrics().getComparisonCount();

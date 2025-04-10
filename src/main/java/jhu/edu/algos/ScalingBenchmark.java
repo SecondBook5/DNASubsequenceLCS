@@ -10,9 +10,7 @@ import java.util.*;
 /**
  * ScalingBenchmark runs the Dynamic Programming and Brute Force LCS algorithms
  * on a set of increasing sequence sizes to collect asymptotic performance data.
- *
- * This is used to analyze and compare empirical time and comparison counts with
- * theoretical expectations. Brute-force is only applied up to a safe threshold.
+ * Brute-force is skipped for sizes above the threshold.
  */
 public class ScalingBenchmark {
 
@@ -25,16 +23,16 @@ public class ScalingBenchmark {
     private static final int BRUTE_FORCE_LIMIT = 30;
 
     // Default output locations
-    private static final String DEFAULT_CSV = "scaling_benchmark.csv";
+    private static final String DEFAULT_TXT = "scaling_benchmark.txt";
     private static final String DEFAULT_PNG = "scaling_plot.png";
 
     /**
-     * CLI entry point. Accepts "--plot" flag.
+     * CLI entry point. Accepts "--plot" flag to trigger PNG plot generation.
      */
     public static void main(String[] args) {
         boolean generatePlot = Arrays.asList(args).contains("--plot");
         try {
-            run(DEFAULT_CSV, DEFAULT_PNG, generatePlot);
+            run(DEFAULT_TXT, DEFAULT_PNG, generatePlot);
         } catch (Throwable t) {
             System.err.println(" Benchmark execution failed due to an unexpected error.");
             System.err.println("→ Reason: " + t.getClass().getSimpleName() + " - " + t.getMessage());
@@ -55,22 +53,24 @@ public class ScalingBenchmark {
     }
 
     /**
-     * Executes the full scaling benchmark from start to finish.
+     * Executes the scaling benchmark, writing results to TXT and optionally plotting a graph.
      *
-     * @param csvPath   Output path for the CSV file
-     * @param plotPath  Output path for the PNG chart (optional)
-     * @param makePlot  Whether to generate a plot image
-     * @throws Exception if any error occurs during processing
+     * @param txtPath  Path to output report file (.txt)
+     * @param plotPath Path to save plot (.png)
+     * @param makePlot Whether to generate the graph
      */
-    public static void run(String csvPath, String plotPath, boolean makePlot) throws Exception {
+    public static void run(String txtPath, String plotPath, boolean makePlot) throws Exception {
         List<LCSResult> dynamicResults = new ArrayList<>();
         List<LCSResult> bruteResults = new ArrayList<>();
 
         AbstractLCS dyn = new LCSDynamic();
         AbstractLCS brute = new LCSBruteForce();
 
-        try (PrintWriter csv = new PrintWriter(new FileWriter(csvPath))) {
-            csv.println("Length,Dynamic_Comparisons,Dynamic_Time_ms,Brute_Comparisons,Brute_Time_ms");
+        try (PrintWriter out = new PrintWriter(new FileWriter(txtPath))) {
+            out.println("Scaling Benchmark Report");
+            out.println("=".repeat(80));
+            out.printf("%-10s | %-15s %-12s | %-15s %-12s%n", "Length", "Dyn_Comparisons", "Dyn_Time(ms)", "BF_Comparisons", "BF_Time(ms)");
+            out.println("-".repeat(80));
 
             for (int len = MIN_LENGTH; len <= MAX_LENGTH; len += STEP_SIZE) {
                 String s1 = generateSequence(len);
@@ -85,20 +85,22 @@ public class ScalingBenchmark {
                 LCSResult bruteResult = null;
                 if (len <= BRUTE_FORCE_LIMIT) {
                     bruteResult = brute.computeLCS(label, s1, s2);
-                    bruteResults.add(bruteResult);
                 }
 
-                csv.printf(
-                        "%d,%d,%d,%s,%s%n",
+                // Always add result or null to preserve label order
+                bruteResults.add(bruteResult);
+
+                out.printf("%-10d | %-15d %-12d | %-15s %-12s%n",
                         len,
                         dynResult.getMetrics().getComparisonCount(),
                         dynResult.getMetrics().getElapsedTimeMs(),
-                        bruteResult != null ? bruteResult.getMetrics().getComparisonCount() : "",
-                        bruteResult != null ? bruteResult.getMetrics().getElapsedTimeMs() : ""
+                        bruteResult != null ? bruteResult.getMetrics().getComparisonCount() : "-",
+                        bruteResult != null ? bruteResult.getMetrics().getElapsedTimeMs() : "-"
                 );
             }
 
-            System.out.println(" Benchmark complete. CSV written to: " + csvPath);
+            out.println("=".repeat(80));
+            System.out.println(" Benchmark complete. TXT written to: " + txtPath);
 
             if (makePlot) {
                 System.out.println(" Generating graph...");
@@ -108,10 +110,7 @@ public class ScalingBenchmark {
     }
 
     /**
-     * Generates a synthetic DNA sequence of the specified length.
-     *
-     * @param length Number of characters in the sequence
-     * @return DNA sequence (A, C, G, T repeated)
+     * Generates a synthetic DNA sequence of the given length (A, C, G, T repeated).
      */
     private static String generateSequence(int length) {
         StringBuilder sb = new StringBuilder(length);
