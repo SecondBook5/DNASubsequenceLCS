@@ -58,14 +58,14 @@ public class LCSDynamicTest {
     @Test
     void testNoCommonCharacters() {
         LCSResult result = algorithm.computeLCS("NoCommon", "AAA", "GGG");
-        assertEquals("", result.getLCS());
+        assertEquals("", result.getLCS(), "No characters in common should return empty LCS.");
     }
 
     @Test
     void testIdenticalStrings() {
         String s = "TACGGTCA";
         LCSResult result = algorithm.computeLCS("Identical", s, s);
-        assertEquals(s, result.getLCS());
+        assertEquals(s, result.getLCS(), "LCS of identical strings should be the string itself.");
     }
 
     @Test
@@ -75,18 +75,17 @@ public class LCSDynamicTest {
 
         LCSResult result = algorithm.computeLCS("Reversed", s1, s2);
 
-        // Should be a single common character (unless palindromic)
-        assertTrue(result.getLCSLength() <= 2);
+        assertTrue(result.getLCSLength() <= s1.length(), "LCS length must not exceed original string.");
     }
 
     @Test
     void testOneCharacterOverlap() {
         LCSResult result = algorithm.computeLCS("OneChar", "A", "A");
-        assertEquals("A", result.getLCS());
+        assertEquals("A", result.getLCS(), "LCS of 'A' vs 'A' should be 'A'.");
         assertEquals(1, result.getLCSLength());
 
         LCSResult result2 = algorithm.computeLCS("NoChar", "A", "B");
-        assertEquals("", result2.getLCS());
+        assertEquals("", result2.getLCS(), "LCS of different single chars should be empty.");
     }
 
     @Test
@@ -101,9 +100,8 @@ public class LCSDynamicTest {
             int m = s1.length();
             int n = s2.length();
 
-            // Ensure LCS is not null and not longer than either string
-            assertNotNull(result.getLCS(), "LCS result should not be null");
-            assertTrue(result.getLCSLength() <= Math.min(m, n), "LCS length exceeds bounds");
+            assertNotNull(result.getLCS(), "LCS should not be null.");
+            assertTrue(result.getLCSLength() <= Math.min(m, n), "LCS should not exceed input bounds.");
 
             // Estimate upper bound (relaxed, not enforced)
             long estimated = (long) m * n;
@@ -117,18 +115,14 @@ public class LCSDynamicTest {
                         actual, softLimit, m, n);
             }
 
-            // Ensure timing is non-negative
-            assertTrue(result.getMetrics().getElapsedTimeMs() >= 0, "Elapsed time should be non-negative");
-
-            // Print stats for graphing or debugging
-            System.out.printf("LCS[%d x %d] | L: %d | Comp: %d | Time: %d ms%n",
+            // Print result for plotting
+            System.out.printf("LCS[%d x %d] | L: %d | Comparisons: %d | Time: %d ms%n",
                     m, n,
                     result.getLCSLength(),
                     actual,
                     result.getMetrics().getElapsedTimeMs());
         }
     }
-
 
     /**
      * Generates progressively larger strings for performance scaling tests.

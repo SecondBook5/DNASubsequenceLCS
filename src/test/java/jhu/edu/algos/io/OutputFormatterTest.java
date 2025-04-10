@@ -29,7 +29,7 @@ public class OutputFormatterTest {
     }
 
     /**
-     * Full test that checks input echo, both LCS algorithm outputs, and summary formatting.
+     * Full test that checks input echo, both LCS algorithm outputs, matrix, and summary formatting.
      */
     @Test
     void testOutputFormatterWritesAllExpectedContent() throws IOException {
@@ -61,48 +61,52 @@ public class OutputFormatterTest {
         String content = Files.readString(path);
 
         // === Validate input echo ===
-        assertTrue(content.contains("S1 = ACGT"), "Should echo S1 input");
-        assertTrue(content.contains("S2 = AGT"), "Should echo S2 input");
-        assertTrue(content.contains("S3 = CG"), "Should echo S3 input");
+        assertTrue(content.contains("Number of sequences to be compared: 3"), "Should list input size");
+        assertTrue(content.contains("Sequence #1 | Length: " + inputSequences.get("S1").length()), "Should list correct S1 size");
+        assertTrue(content.contains("ACGT"), "Should echo sequence S1");
+        assertTrue(content.contains("AGT"), "Should echo sequence S2");
+        assertTrue(content.contains("CG"), "Should echo sequence S3");
 
-        // === Validate pairwise block headers ===
-        assertTrue(content.contains("Pairwise Comparison: S1 vs S2"), "Missing block for S1 vs S2");
-        assertTrue(content.contains("Pairwise Comparison: S2 vs S3"), "Missing block for S2 vs S3");
+        // === Validate pairwise comparison section ===
+        assertTrue(content.contains("Comparing sequences S1 vs S2"), "Missing comparison block for S1 vs S2");
+        assertTrue(content.contains("Comparing sequences S2 vs S3"), "Missing comparison block for S2 vs S3");
 
-        // === Validate both algorithm blocks ===
-        assertTrue(content.contains("-- Dynamic Programming LCS --"), "Missing dynamic section");
-        assertTrue(content.contains("-- Brute Force LCS --"), "Missing brute force section");
+        // === Validate LCS summary ===
+        assertTrue(content.contains("Longest common subsequence | Length: 3"), "Missing LCS length for AGT");
+        assertTrue(content.contains("AGT"), "Missing LCS value AGT");
+        assertTrue(content.contains("G"), "Missing LCS value G");
 
-        // === Validate LCS strings and lengths ===
-        assertTrue(content.contains("LCS        : AGT"), "Missing LCS AGT");
-        assertTrue(content.contains("Length     : 3"), "Missing LCS length for AGT");
-        assertTrue(content.contains("LCS        : G"), "Missing LCS G");
+        // === Validate matrix block ===
+        assertTrue(content.contains("Printing out subsequence matrix"), "Should include DP matrix section");
+        assertTrue(content.contains("A G T"), "Should include s2 header row");
+        assertTrue(content.contains("A "), "Should include s1 row");
 
-        // === Validate comparisons and time ===
-        assertTrue(content.contains("Comparisons: 25"), "Missing brute-force comparisons");
-        assertTrue(content.contains("Time (ms)"), "Missing brute-force time label");
+        // === Validate algorithm headers ===
+        assertTrue(content.contains("-- Dynamic Programming LCS --"), "Missing dynamic algorithm header");
+        assertTrue(content.contains("-- Brute Force LCS --"), "Missing brute force algorithm header");
+
+        // === Validate metrics section ===
+        assertTrue(content.contains("Comparisons: 25"), "Should show brute-force comparisons");
+        assertTrue(content.contains("Time (ms)"), "Should show brute-force time label");
 
 
-        // === Validate summary table section ===
-        assertTrue(content.contains("Summary Table"), "Missing summary header");
-        assertTrue(content.contains("S1 vs S2"), "Summary should list S1 vs S2");
-        assertTrue(content.contains("S2 vs S3"), "Summary should list S2 vs S3");
-
-        // === Optional: Check that AGT and G appear in summary as lengths ===
-        assertTrue(content.contains("| 3"), "Summary table should include length 3");
-        assertTrue(content.contains("| 1"), "Summary table should include length 1");
+        // === Validate summary table ===
+        assertTrue(content.contains("Summary Table (Comparisons and Time)"), "Missing summary table header");
+        assertTrue(content.contains("S1 vs S2"), "Missing summary entry for S1 vs S2");
+        assertTrue(content.contains("S2 vs S3"), "Missing summary entry for S2 vs S3");
+        assertTrue(content.contains("| 3"), "Should include LCS length 3");
+        assertTrue(content.contains("| 1"), "Should include LCS length 1");
     }
 
     /**
-     * Generates a mock LCSResult with preset metrics and values.
+     * Helper method to mock an LCSResult with fake metrics.
      */
     private LCSResult mockResult(String label, String s1, String s2, String lcs,
                                  long comparisons, long timeMs) {
         PerformanceMetrics metrics = new PerformanceMetrics();
         metrics.addComparisons(comparisons);
         metrics.startTimer();
-        try { Thread.sleep(1); } catch (InterruptedException ignored) {} // simulate delay
-        metrics.stopTimer(); // simulated time
+        metrics.stopTimer();
         return new LCSResult(label, s1, s2, lcs, metrics);
     }
 }

@@ -7,7 +7,7 @@ import jhu.edu.algos.lcs.*;
 import java.util.*;
 
 /**
- * Driver for running LCS comparisons on the required input (S1 to S4).
+ * Driver for running LCS comparisons on the required input (S1 to S4 or more).
  * Executes both Dynamic Programming and Brute Force implementations.
  * Results are written to console and output file using OutputFormatter.
  */
@@ -43,6 +43,11 @@ public class LCSDriver {
      * @throws Exception if the input is invalid or comparison fails.
      */
     public static void runFromFile(String inputFile, String outputFile) throws Exception {
+        // Enforce output format to end in .txt
+        if (!outputFile.endsWith(".txt")) {
+            throw new IllegalArgumentException("Output file must have a .txt extension.");
+        }
+
         // Step 1: Load and validate input sequences
         Map<String, String> inputSequences = SequenceInputHandler.readSequencesFromFile(inputFile);
 

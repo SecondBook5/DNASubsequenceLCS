@@ -11,7 +11,7 @@ import java.util.*;
 /**
  * OutputFormatter handles the display and writing of LCS results
  * to both the console and a file. Results are printed per pair,
- * including metrics, and a final summary table is appended.
+ * including metrics, DP table (for dynamic), and a final summary table.
  */
 public class OutputFormatter {
 
@@ -33,36 +33,41 @@ public class OutputFormatter {
             // Create a writer to the output file
             PrintWriter writer = new PrintWriter(new FileWriter(outputPath));
 
-            // Use a helper method to print to both terminal and file
-            dualPrint(writer, "======================================================================");
-            dualPrint(writer, "Input Sequences:");
+            dualPrint(writer, "=".repeat(70));
+            dualPrint(writer, "Number of sequences to be compared: " + inputSequences.size());
 
-            // Echo the original input sequences
+            int index = 1;
             for (Map.Entry<String, String> entry : inputSequences.entrySet()) {
-                dualPrint(writer, entry.getKey() + " = " + entry.getValue());
+                dualPrint(writer, "Sequence #" + index + " | Length: " + entry.getValue().length());
+                dualPrint(writer, entry.getValue());
+                index++;
             }
+            dualPrint(writer, "=".repeat(70));
 
-            dualPrint(writer, "======================================================================");
-
-            // Iterate through all results by index (assuming results are paired in same order)
             for (int i = 0; i < dynamicResults.size(); i++) {
                 LCSResult dyn = dynamicResults.get(i);
                 LCSResult bf = bruteForceResults.get(i);
 
-                dualPrint(writer, "\nPairwise Comparison: " + dyn.getComparisonLabel());
+                dualPrint(writer, "\nComparing sequences " + dyn.getComparisonLabel());
+                dualPrint(writer, "Longest common subsequence | Length: " + dyn.getLCSLength());
+                dualPrint(writer, dyn.getLCS());
 
-                // -- Dynamic Result Block --
+                // Print the matrix
+                dualPrint(writer, "\nPrinting out subsequence matrix...");
+                printMatrix(writer, dyn.getFirstInput(), dyn.getSecondInput());
+
+                // Dynamic block
                 dualPrint(writer, "\n-- Dynamic Programming LCS --");
                 printResultBlock(writer, dyn);
 
-                // -- Brute Force Result Block --
+                // Brute-force block
                 dualPrint(writer, "\n-- Brute Force LCS --");
                 printResultBlock(writer, bf);
 
                 dualPrint(writer, "\n" + "=".repeat(70));
             }
 
-            // Print the final summary table
+            // Summary
             printSummaryTable(writer, dynamicResults, bruteForceResults);
 
             // Close the writer after finishing
@@ -81,7 +86,6 @@ public class OutputFormatter {
      */
     private static void printResultBlock(PrintWriter writer, LCSResult result) {
         PerformanceMetrics metrics = result.getMetrics();
-
         dualPrint(writer, "LCS        : " + result.getLCS());
         dualPrint(writer, "Length     : " + result.getLCSLength());
         dualPrint(writer, "Comparisons: " + metrics.getComparisonCount());
@@ -98,7 +102,6 @@ public class OutputFormatter {
     private static void printSummaryTable(PrintWriter writer,
                                           List<LCSResult> dynamic,
                                           List<LCSResult> bruteForce) {
-
         dualPrint(writer, "\nSummary Table (Comparisons and Time)");
         dualPrint(writer, "=".repeat(70));
         dualPrint(writer, String.format(
@@ -109,14 +112,12 @@ public class OutputFormatter {
         for (int i = 0; i < dynamic.size(); i++) {
             LCSResult dyn = dynamic.get(i);
             LCSResult bf = bruteForce.get(i);
-
-            String label = dyn.getComparisonLabel();
             PerformanceMetrics dm = dyn.getMetrics();
             PerformanceMetrics bm = bf.getMetrics();
 
             dualPrint(writer, String.format(
                     "%-12s | %-10d %-12d | %-10d %-12d | %d",
-                    label,
+                    dyn.getComparisonLabel(),
                     dm.getComparisonCount(), dm.getElapsedTimeMs(),
                     bm.getComparisonCount(), bm.getElapsedTimeMs(),
                     dyn.getLCSLength()
@@ -127,11 +128,43 @@ public class OutputFormatter {
     }
 
     /**
-     * Helper method to print to both console and file.
+     * Prints the DP matrix used to compute the LCS between two sequences.
+     * This is a visual representation of the computation table.
      *
-     * @param writer The PrintWriter for file output
-     * @param line   The string line to print
+     * @param writer PrintWriter for output
+     * @param s1     First sequence
+     * @param s2     Second sequence
      */
+    private static void printMatrix(PrintWriter writer, String s1, String s2) {
+        int m = s1.length();
+        int n = s2.length();
+
+        int[][] dp = new int[m + 1][n + 1];
+
+        // Fill the matrix
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (s1.charAt(i - 1) == s2.charAt(j - 1)) {
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                } else {
+                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+                }
+            }
+        }
+
+        // Print header
+        dualPrint(writer, "\t  " + String.join(" ", s2.split("")));
+        for (int i = 0; i <= m; i++) {
+            StringBuilder row = new StringBuilder();
+            if (i == 0) row.append("  ");
+            else row.append(s1.charAt(i - 1)).append(" ");
+            for (int j = 0; j <= n; j++) {
+                row.append(dp[i][j]).append(" ");
+            }
+            dualPrint(writer, row.toString().trim());
+        }
+    }
+
     private static void dualPrint(PrintWriter writer, String line) {
         System.out.println(line);      // Print to terminal
         writer.println(line);          // Print to file

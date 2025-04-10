@@ -24,7 +24,6 @@ public class LCSDriverTest {
      */
     @BeforeAll
     void setup() throws IOException {
-        // Write a minimal version of required input (S1–S4)
         List<String> lines = List.of(
                 "S1 = ACCGGTCGACTGCGCGGAAGCCGGCCGAA",
                 "S2 = GTCGTTCGGAATGCCGTTGCTCTGTAAA",
@@ -35,7 +34,7 @@ public class LCSDriverTest {
     }
 
     /**
-     * Removes all generated files after test completion.
+     * Deletes all generated files after tests.
      */
     @AfterAll
     void cleanup() throws IOException {
@@ -44,49 +43,60 @@ public class LCSDriverTest {
     }
 
     /**
-     * Tests that the driver generates an output file and includes key content.
+     * Tests that the driver generates an output file and expected content.
      */
     @Test
     void testDriverGeneratesOutputFile() throws Exception {
-        // Call updated driver method with both input and output
         LCSDriver.runFromFile(INPUT_FILE, OUTPUT_FILE);
 
-        // Check output file is created
+        // File should be generated
         assertTrue(Files.exists(Path.of(OUTPUT_FILE)), "Output file should be created");
 
-        // Check output contains expected content
-        String outputContent = Files.readString(Path.of(OUTPUT_FILE));
-        assertTrue(outputContent.contains("S1 = "), "Output should echo input labels");
-        assertTrue(outputContent.contains("Pairwise Comparison: S1 vs S2"), "Should contain labeled comparison");
-        assertTrue(outputContent.contains("-- Dynamic Programming LCS --"), "Should contain dynamic block");
-        assertTrue(outputContent.contains("-- Brute Force LCS --"), "Should contain brute-force block");
-        assertTrue(outputContent.contains("Summary Table"), "Should include summary section");
+        // Read file contents
+        String output = Files.readString(Path.of(OUTPUT_FILE));
+
+        // Validate input sequence echo
+        assertTrue(output.contains("Sequence #1"), "Should mention sequence numbers");
+        assertTrue(output.contains("ACCGGTCGACTGCGCGGAAGCCGGCCGAA"), "Should include sequence content");
+
+        // Validate LCS output and sections
+        assertTrue(output.contains("Comparing sequences S1 vs S2"), "Should mention comparisons");
+        assertTrue(output.contains("Longest common subsequence"), "Should show LCS line");
+        assertTrue(output.contains("-- Dynamic Programming LCS --"), "Should include dynamic section");
+        assertTrue(output.contains("-- Brute Force LCS --"), "Should include brute-force section");
+
+        // Validate summary
+        assertTrue(output.contains("Summary Table (Comparisons and Time)"), "Should include summary table");
+        assertTrue(output.contains("S1 vs S2"), "Pair names should be listed in summary");
     }
 
     /**
-     * Tests that missing input file throws IOException.
+     * Tests that missing input file triggers exception.
      */
     @Test
     void testFailsWithMissingFile() {
-        Exception exception = assertThrows(IOException.class,
-                () -> LCSDriver.runFromFile("nonexistent_input.txt", "unused_output.txt"));
+        Exception ex = assertThrows(IOException.class,
+                () -> LCSDriver.runFromFile("nonexistent_input.txt", "output.txt"));
 
-        assertTrue(exception.getMessage().contains("nonexistent_input"), "Should throw on missing input file");
+        assertTrue(ex.getMessage().contains("nonexistent_input"), "Should fail for missing input");
     }
 
     /**
-     * Tests that input with only one sequence throws IllegalArgumentException.
+     * Tests that input with only one sequence throws an exception.
      */
     @Test
     void testFailsWithSingleSequence() throws Exception {
-        String badInput = "test_one_sequence.txt";
-        Files.write(Path.of(badInput), List.of("S1 = ACTG"));
+        String oneSeqFile = "one_sequence.txt";
+        String output = "output.txt";
 
-        Exception exception = assertThrows(IllegalArgumentException.class,
-                () -> LCSDriver.runFromFile(badInput, "test_output.txt"));
+        Files.write(Path.of(oneSeqFile), List.of("S1 = ACTG"));
 
-        assertTrue(exception.getMessage().contains("At least two sequences"), "Should require minimum two sequences");
-        Files.deleteIfExists(Path.of(badInput));
-        Files.deleteIfExists(Path.of("test_output.txt"));
+        Exception ex = assertThrows(IllegalArgumentException.class,
+                () -> LCSDriver.runFromFile(oneSeqFile, output));
+
+        assertTrue(ex.getMessage().contains("At least two sequences"), "Should require two or more sequences");
+
+        Files.deleteIfExists(Path.of(oneSeqFile));
+        Files.deleteIfExists(Path.of(output));
     }
 }

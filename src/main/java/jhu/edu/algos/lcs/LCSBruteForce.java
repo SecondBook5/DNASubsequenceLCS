@@ -68,26 +68,26 @@ public class LCSBruteForce extends AbstractLCS {
             return;
         }
 
-        // Include current character
+        // Include the current character
         current.append(shorter.charAt(index));
         exploreSubsequences(shorter, longer, index + 1, current);
-        current.deleteCharAt(current.length() - 1); // Backtrack
+        current.deleteCharAt(current.length() - 1); // backtrack
 
-        // Exclude current character
+        // Exclude the current character
         exploreSubsequences(shorter, longer, index + 1, current);
     }
 
     /**
-     * Checks whether a StringBuilder sequence is a subsequence of the full string.
-     * Updates the performance metrics for each comparison made.
+     * Checks whether a candidate subsequence exists within the full string.
+     * Increments the comparison counter for each character check.
      *
      * @param candidate The subsequence candidate.
-     * @param fullStr   The full string.
-     * @return true if candidate is a valid subsequence of fullStr.
+     * @param fullStr   The full reference string.
+     * @return true if the candidate is a valid subsequence of fullStr.
      */
     private boolean isSubsequence(StringBuilder candidate, String fullStr) {
-        int i = 0; // pointer for candidate
-        int j = 0; // pointer for fullStr
+        int i = 0;
+        int j = 0;
 
         while (i < candidate.length() && j < fullStr.length()) {
             metrics.incrementComparisonCount();

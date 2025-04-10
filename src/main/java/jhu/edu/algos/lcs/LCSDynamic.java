@@ -9,6 +9,16 @@ import jhu.edu.algos.utils.PerformanceMetrics;
  */
 public class LCSDynamic extends AbstractLCS {
 
+    // Optional flag to toggle DP matrix printing
+    private boolean printMatrix = false;
+
+    /**
+     * Enables matrix printing for debugging or educational output.
+     */
+    public void enableMatrixPrinting() {
+        this.printMatrix = true;
+    }
+
     /**
      * Computes the longest common subsequence (LCS) between two input strings
      * using the classic dynamic programming approach.
@@ -73,7 +83,44 @@ public class LCSDynamic extends AbstractLCS {
         // Stop performance timer
         metrics.stopTimer();
 
-        // Create and return the result object
-        return new LCSResult(label, s1, s2, lcs.toString(), metrics);
+        // Optionally print the full DP matrix
+        if (printMatrix) {
+            printSubsequenceMatrix(s1, s2, dp);
+        }
+
+        // New version that includes the DP matrix in the result
+        return new LCSResult(label, s1, s2, lcs.toString(), metrics, dp);
+
+    }
+
+    /**
+     * Prints the DP matrix used to compute the LCS.
+     *
+     * @param s1 First sequence
+     * @param s2 Second sequence
+     * @param dp DP table built by the algorithm
+     */
+    private void printSubsequenceMatrix(String s1, String s2, int[][] dp) {
+        System.out.println("\nPrinting out subsequence matrix...");
+
+        // Print header row
+        System.out.print("    ");
+        for (int j = 0; j < s2.length(); j++) {
+            System.out.print(" " + s2.charAt(j));
+        }
+        System.out.println();
+
+        for (int i = 0; i <= s1.length(); i++) {
+            if (i == 0) {
+                System.out.print("  ");
+            } else {
+                System.out.print(s1.charAt(i - 1) + " ");
+            }
+
+            for (int j = 0; j <= s2.length(); j++) {
+                System.out.print(dp[i][j] + " ");
+            }
+            System.out.println();
+        }
     }
 }
