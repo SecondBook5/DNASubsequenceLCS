@@ -134,4 +134,39 @@ public class CurveFitterTest {
         m.addComparisons(comparisons);
         return m;
     }
+    /**
+     * Tests linear fit for pairwise benchmark data: T(p) = 7 * p
+     */
+    @Test
+    void testLinearFitExact() {
+        List<Double> x = new ArrayList<>();
+        List<Double> y = new ArrayList<>();
+
+        for (int p = 1; p <= 10; p++) {
+            x.add((double) p);
+            y.add(7.0 * p);
+        }
+
+        double c = CurveFitter.fitLinear(x, y);
+        assertEquals(7.0, c, TOLERANCE, "Should fit clean linear T(p) ≈ 7·p model");
+    }
+
+    /**
+     * Tests linear fit with noisy pairwise data: T(p) ≈ 10p + noise
+     */
+    @Test
+    void testLinearFitWithNoise() {
+        List<Double> x = new ArrayList<>();
+        List<Double> y = new ArrayList<>();
+        Random rand = new Random(42);
+
+        for (int p = 1; p <= 15; p++) {
+            x.add((double) p);
+            double noise = 10.0 * p + rand.nextGaussian() * 2.0;  // 20% noise
+            y.add(noise);
+        }
+
+        double c = CurveFitter.fitLinear(x, y);
+        assertTrue(Math.abs(c - 10.0) < 2.0, "Should approximate 10.0 with noise");
+    }
 }

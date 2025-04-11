@@ -87,4 +87,28 @@ public class CurveFitter {
         // Prevent division by near-zero denominator
         return (Math.abs(denominator) < EPSILON) ? 0.0 : numerator / denominator;
     }
+    /**
+     * Fits a linear model T(p) ≈ c * p to observed comparison counts.
+     * Used for pairwise benchmarking where input length is fixed.
+     *
+     * @param xList List of x values (e.g., number of pairs)
+     * @param yList List of y values (e.g., total comparisons)
+     * @return Best-fit constant `c` in T(p) ≈ c·p
+     */
+    public static double fitLinear(List<Double> xList, List<Double> yList) {
+        if (xList.size() != yList.size()) throw new IllegalArgumentException("x and y sizes must match");
+
+        double numerator = 0.0;
+        double denominator = 0.0;
+
+        for (int i = 0; i < xList.size(); i++) {
+            double x = xList.get(i);
+            double y = yList.get(i);
+            numerator += x * y;
+            denominator += x * x;
+        }
+
+        return (Math.abs(denominator) < EPSILON) ? 0.0 : numerator / denominator;
+    }
+
 }

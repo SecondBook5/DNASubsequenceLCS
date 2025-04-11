@@ -30,12 +30,36 @@ public class ScalingBenchmark {
     private static final String DEFAULT_PNG = "scaling_plot.png";
 
     /**
-     * CLI entry point. Use --plot to generate graph.
+     * CLI entry point. Supports:
+     * --run       Run full benchmark (default if no flag)
+     * --plot      Generate PNG plot
+     * --test      Run short version for unit testing
      */
     public static void main(String[] args) {
-        boolean plot = Arrays.asList(args).contains("--plot");
+        Set<String> argSet = new HashSet<>(Arrays.asList(args));
+        boolean runTest = argSet.contains("--test");
+        boolean runFull = argSet.contains("--run");
+        boolean makePlot = argSet.contains("--plot");
+
         try {
-            run(DEFAULT_TXT, DEFAULT_PNG, plot);
+            if (runTest) {
+                System.out.println("Running lightweight test benchmark...");
+                run("test_scaling.txt", "test_scaling.png", makePlot, 10, 20, 10, 2);
+            } else if (runFull || args.length == 0) {
+                System.out.println("Running full scaling benchmark...");
+                run(DEFAULT_TXT, DEFAULT_PNG, makePlot);
+            } else {
+                System.out.println("""
+                    Unknown or missing flags. Usage:
+                      --run         Run full benchmark (default if no flag)
+                      --plot        Generate PNG plot
+                      --test        Run short version for unit testing
+
+                    Example:
+                      java ScalingBenchmark --run --plot
+                      java ScalingBenchmark --test
+                    """);
+            }
         } catch (Throwable t) {
             System.err.println("Benchmark failed: " + t.getClass().getSimpleName() + " - " + t.getMessage());
             if (t instanceof OutOfMemoryError) {
@@ -53,6 +77,23 @@ public class ScalingBenchmark {
      * @param makePlot  Whether to generate a graph
      */
     public static void run(String txtPath, String plotPath, boolean makePlot) throws Exception {
+        run(txtPath, plotPath, makePlot, MIN_LENGTH, MAX_LENGTH, STEP, PAIRS_PER_LENGTH);
+    }
+
+    /**
+     * Overloaded version that accepts custom parameters for testing.
+     *
+     * @param txtPath         Output results file
+     * @param plotPath        Output PNG file
+     * @param makePlot        Whether to generate a graph
+     * @param minLen          Minimum sequence length
+     * @param maxLen          Maximum sequence length
+     * @param step            Step size for length
+     * @param pairsPerLength  Number of sequence pairs per length
+     */
+    public static void run(String txtPath, String plotPath, boolean makePlot,
+                           int minLen, int maxLen, int step, int pairsPerLength) throws Exception {
+
         List<LCSResult> dynamicResults = new ArrayList<>();
         List<LCSResult> bruteResults = new ArrayList<>();
 
@@ -69,8 +110,8 @@ public class ScalingBenchmark {
                     "Length", "Pair", "Dyn_Comparisons", "Dyn_Time(ms)", "BF_Comparisons", "BF_Time(ms)");
             out.println("-".repeat(100));
 
-            for (int len = MIN_LENGTH; len <= MAX_LENGTH; len += STEP) {
-                for (int i = 1; i <= PAIRS_PER_LENGTH; i++) {
+            for (int len = minLen; len <= maxLen; len += step) {
+                for (int i = 1; i <= pairsPerLength; i++) {
                     String s1 = generateDNA(rand, len);
                     String s2 = generateDNA(rand, len);
                     String label = "L" + len + "_P" + i;
