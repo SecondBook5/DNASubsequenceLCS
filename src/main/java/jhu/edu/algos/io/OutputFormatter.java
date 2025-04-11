@@ -88,25 +88,29 @@ public class OutputFormatter {
         PerformanceMetrics metrics = result.getMetrics();
         dualPrint(writer, "LCS        : " + result.getLCS());
         dualPrint(writer, "Length     : " + result.getLCSLength());
-        dualPrint(writer, "Comparisons: " + metrics.getComparisonCount());
-        dualPrint(writer, "Time (ms)  : " + metrics.getElapsedTimeMs());
+        dualPrint(writer, String.format("Comparisons: %,d", metrics.getComparisonCount()));
+        dualPrint(writer, String.format("Time (ms)  : %.4e", metrics.getElapsedTimeMs() * 1.0));
+        dualPrint(writer, String.format("Space (MB) : %.4e", metrics.getEstimatedSpaceMB()));
     }
 
     /**
      * Prints a final summary table comparing metrics of both algorithms.
      *
-     * @param writer PrintWriter for file output
-     * @param dynamic List of results from dynamic algorithm
+     * @param writer     PrintWriter for file output
+     * @param dynamic    List of results from dynamic algorithm
      * @param bruteForce List of results from brute-force algorithm
      */
     private static void printSummaryTable(PrintWriter writer,
                                           List<LCSResult> dynamic,
                                           List<LCSResult> bruteForce) {
-        dualPrint(writer, "\nSummary Table (Comparisons and Time)");
+        dualPrint(writer, "\nSummary Table (Comparisons, Time, and Space)");
         dualPrint(writer, "=".repeat(70));
         dualPrint(writer, String.format(
-                "%-12s | %-10s %-12s | %-10s %-12s | %s",
-                "Pair", "Dyn_Comp", "Dyn_Time(ms)", "BF_Comp", "BF_Time(ms)", "LCS_Len"));
+                "%-16s | %-12s %-12s %-12s | %-12s %-12s %-12s | %s",
+                "Pair",
+                "Dyn_Comp", "Dyn_Time", "Dyn_MB",
+                "BF_Comp", "BF_Time", "BF_MB",
+                "LCS_Len"));
         dualPrint(writer, "-".repeat(70));
 
         for (int i = 0; i < dynamic.size(); i++) {
@@ -116,10 +120,10 @@ public class OutputFormatter {
             PerformanceMetrics bm = bf.getMetrics();
 
             dualPrint(writer, String.format(
-                    "%-12s | %-10d %-12d | %-10d %-12d | %d",
+                    "%-16s | %,12d %.4e %.4e | %,12d %.4e %.4e | %d",
                     dyn.getComparisonLabel(),
-                    dm.getComparisonCount(), dm.getElapsedTimeMs(),
-                    bm.getComparisonCount(), bm.getElapsedTimeMs(),
+                    dm.getComparisonCount(), dm.getElapsedTimeMs() * 1.0, dm.getEstimatedSpaceMB(),
+                    bm.getComparisonCount(), bm.getElapsedTimeMs() * 1.0, bm.getEstimatedSpaceMB(),
                     dyn.getLCSLength()
             ));
         }
@@ -165,8 +169,38 @@ public class OutputFormatter {
         }
     }
 
+    /**
+     * Prints a line to both the terminal and the output file.
+     *
+     * @param writer PrintWriter for output file
+     * @param line   The line of text to print
+     */
     private static void dualPrint(PrintWriter writer, String line) {
         System.out.println(line);      // Print to terminal
         writer.println(line);          // Print to file
+    }
+    /**
+     * Appends an aggregate performance summary section to the output file.
+     *
+     * @param dynTime   Total runtime of dynamic programming in milliseconds
+     * @param dynSpace  Total space used by dynamic programming in bytes
+     * @param bfTime    Total runtime of brute-force in milliseconds
+     * @param bfSpace   Total space used by brute-force in bytes
+     * @param outputFile Output file path to append results to
+     */
+    public static void appendPerformanceSummary(long dynTime, long dynSpace,
+                                                long bfTime, long bfSpace,
+                                                String outputFile) {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(outputFile, true))) {
+            writer.println();
+            writer.println("===== Aggregate Performance Summary =====");
+            writer.printf("Dynamic Programming: Total Time = %d ms | Total Space = %.3f MB%n",
+                    dynTime, dynSpace / 1_000_000.0);
+            writer.printf("Brute Force        : Total Time = %d ms | Total Space = %.3f MB%n",
+                    bfTime, bfSpace / 1_000_000.0);
+            writer.println("==========================================");
+        } catch (IOException e) {
+            System.err.println("Error appending performance summary to file: " + e.getMessage());
+        }
     }
 }

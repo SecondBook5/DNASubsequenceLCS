@@ -65,9 +65,18 @@ public class LCSDriverTest {
         assertTrue(output.contains("-- Dynamic Programming LCS --"), "Should include dynamic section");
         assertTrue(output.contains("-- Brute Force LCS --"), "Should include brute-force section");
 
-        // Validate summary
-        assertTrue(output.contains("Summary Table (Comparisons and Time)"), "Should include summary table");
+        // Validate summary table
+        assertTrue(output.contains("Summary Table (Comparisons, Time, and Space)"), "Should include summary table");
         assertTrue(output.contains("S1 vs S2"), "Pair names should be listed in summary");
+
+        // Validate aggregate summary section
+        assertTrue(output.replace("\r", "").contains("===== Aggregate Performance Summary ====="), "Should include aggregate summary header");
+        assertTrue(output.contains("Dynamic Programming: Total Time ="), "Should report total runtime for dynamic");
+        assertTrue(output.contains("Brute Force        : Total Time ="), "Should report total runtime for brute force");
+        assertTrue(output.contains("Total Space ="), "Should report total space for both algorithms");
+
+        // Validate presence of MB in both space rows (scientific notation check relaxed to substring match)
+        assertTrue(output.contains("MB"), "Space usage should be reported in MB");
     }
 
     /**

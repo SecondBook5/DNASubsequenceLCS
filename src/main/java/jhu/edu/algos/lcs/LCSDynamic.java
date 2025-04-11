@@ -32,9 +32,9 @@ public class LCSDynamic extends AbstractLCS {
         // Start the timer for performance tracking
         metrics.startTimer();
 
-        // Handle null input defensively
-        if (s1 == null || s2 == null) {
-            throw new IllegalArgumentException("Input strings cannot be null.");
+        // Validate input: null or empty strings are not allowed
+        if (s1 == null || s2 == null || s1.isEmpty() || s2.isEmpty()) {
+            throw new IllegalArgumentException("Input sequences must not be null or empty.");
         }
 
         // Determine lengths of both strings
@@ -43,6 +43,9 @@ public class LCSDynamic extends AbstractLCS {
 
         // Create the dynamic programming matrix (m+1) x (n+1)
         int[][] dp = new int[m + 1][n + 1];
+
+        // Record estimated space usage in bytes (each int is 4 bytes)
+        metrics.setEstimatedSpaceBytes((long)(m + 1) * (n + 1) * Integer.BYTES);
 
         // Fill the matrix using bottom-up approach
         for (int i = 1; i <= m; i++) {

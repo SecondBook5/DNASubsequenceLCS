@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * JUnit 5 test class for PerformanceMetrics.
  * Verifies the correctness of timer logic, comparison counting,
- * and reset functionality.
+ * space tracking, and reset functionality.
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class PerformanceMetricsTest {
@@ -38,6 +38,7 @@ public class PerformanceMetricsTest {
         // Elapsed time should be > 0
         long elapsed = metrics.getElapsedTimeMs();
         assertTrue(elapsed >= 10, "Elapsed time should be at least 10 ms.");
+        assertTrue(metrics.getElapsedTimeSeconds() >= 0.01, "Elapsed time in seconds should be accurate.");
     }
 
     @Test
@@ -90,6 +91,7 @@ public class PerformanceMetricsTest {
         // Simulate full usage
         metrics.startTimer();
         metrics.addComparisons(5);
+        metrics.setEstimatedSpaceBytes(4096);
         try {
             Thread.sleep(5);
         } catch (InterruptedException e) {
@@ -103,5 +105,19 @@ public class PerformanceMetricsTest {
         // Check all fields are zero
         assertEquals(0, metrics.getComparisonCount(), "Comparison count should be 0 after reset.");
         assertEquals(0, metrics.getElapsedTimeMs(), "Elapsed time should be 0 after reset.");
+        assertEquals(0, metrics.getEstimatedSpaceBytes(), "Space usage should be 0 after reset.");
+    }
+
+    @Test
+    void testSetAndGetEstimatedSpace() {
+        metrics.setEstimatedSpaceBytes(2048);
+        assertEquals(2048, metrics.getEstimatedSpaceBytes(), "Should return correct byte count.");
+        assertEquals(2.0, metrics.getEstimatedSpaceKB(), 0.0001, "Should convert to kilobytes accurately.");
+        assertEquals(2.0 / 1024.0, metrics.getEstimatedSpaceMB(), 0.0001, "Should convert to megabytes accurately.");
+    }
+
+    @Test
+    void testNegativeEstimatedSpaceThrows() {
+        assertThrows(IllegalArgumentException.class, () -> metrics.setEstimatedSpaceBytes(-500));
     }
 }

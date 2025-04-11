@@ -40,24 +40,25 @@ public class LCSBruteForceTest {
         assertEquals(expected.length(), result.getLCSLength(), "Length of LCS should match");
     }
 
-    /**
-     * Checks behavior when one of the strings is empty.
-     * LCS should always be the empty string in such cases.
-     */
     @Test
-    void testOneEmptyString() {
-        LCSResult result = algorithm.computeLCS("Empty1", "ACGT", "");
-        assertEquals("", result.getLCS(), "LCS should be empty when one input is empty");
-    }
+    void testNullAndEmptyInputsThrowException() {
+        // Both empty
+        assertThrows(IllegalArgumentException.class,
+                () -> algorithm.computeLCS("EmptyBoth", "", ""));
 
-    /**
-     * Checks behavior when both input strings are empty.
-     * The result should be an empty LCS.
-     */
-    @Test
-    void testBothStringsEmpty() {
-        LCSResult result = algorithm.computeLCS("EmptyBoth", "", "");
-        assertEquals("", result.getLCS(), "LCS of two empty strings should be empty");
+        // One empty
+        assertThrows(IllegalArgumentException.class,
+                () -> algorithm.computeLCS("Empty1", "ACGT", ""));
+        assertThrows(IllegalArgumentException.class,
+                () -> algorithm.computeLCS("Empty2", "", "ACGT"));
+
+        // Null cases
+        assertThrows(IllegalArgumentException.class,
+                () -> algorithm.computeLCS("Null1", null, "ABC"));
+        assertThrows(IllegalArgumentException.class,
+                () -> algorithm.computeLCS("Null2", "ABC", null));
+        assertThrows(IllegalArgumentException.class,
+                () -> algorithm.computeLCS("NullBoth", null, null));
     }
 
     /**
@@ -68,6 +69,7 @@ public class LCSBruteForceTest {
     void testNoCommonCharacters() {
         LCSResult result = algorithm.computeLCS("NoCommon", "AAA", "GGG");
         assertEquals("", result.getLCS(), "No matching characters should produce empty LCS");
+        assertTrue(result.getMetrics().getEstimatedSpaceBytes() > 0);
     }
 
     /**
@@ -78,24 +80,9 @@ public class LCSBruteForceTest {
         String s = "TAC";
         LCSResult result = algorithm.computeLCS("Identical", s, s);
         assertEquals(s, result.getLCS(), "Identical strings should return themselves as LCS");
+        assertTrue(result.getMetrics().getEstimatedSpaceBytes() > 0);
     }
 
-    /**
-     * Ensures that the algorithm throws a clear error
-     * when either input string is null.
-     */
-    @Test
-    void testNullInputsThrowException() {
-        assertThrows(IllegalArgumentException.class,
-                () -> algorithm.computeLCS("Null1", null, "ABC"));
-        assertThrows(IllegalArgumentException.class,
-                () -> algorithm.computeLCS("Null2", "ABC", null));
-    }
-
-    /**
-     * Verifies that performance metrics are recorded properly
-     * and that both comparisons and timing are non-zero.
-     */
     @Test
     void testMetricsAreTracked() {
         LCSResult result = algorithm.computeLCS("Metrics", "AG", "AG");
@@ -103,6 +90,8 @@ public class LCSBruteForceTest {
 
         assertTrue(metrics.getComparisonCount() > 0, "Comparison count should be non-zero");
         assertTrue(metrics.getElapsedTimeMs() >= 0, "Time should be non-negative");
+        assertTrue(metrics.getEstimatedSpaceBytes() > 0, "Expected some space to be recorded");
+        assertTrue(metrics.getEstimatedSpaceMB() > 0.0, "Expected MB scale to be positive");
     }
 
     /**
@@ -119,6 +108,7 @@ public class LCSBruteForceTest {
         assertNotNull(result.getLCS(), "LCS should not be null");
         assertTrue(result.getLCSLength() > 0, "Should find some common subsequence");
         assertTrue(result.getMetrics().getComparisonCount() > 0, "Comparisons should be recorded");
+        assertTrue(result.getMetrics().getEstimatedSpaceBytes() > 0);
     }
 
     /**
@@ -133,6 +123,7 @@ public class LCSBruteForceTest {
         LCSResult result = algorithm.computeLCS("MiddleMatch", s1, s2);
 
         assertEquals("GATC", result.getLCS(), "Should find GATC as the full LCS");
+        assertTrue(result.getMetrics().getEstimatedSpaceBytes() > 0);
     }
 
     /**
@@ -154,5 +145,7 @@ public class LCSBruteForceTest {
                 lcs.equals("BCAB") || lcs.equals("BDAB") || lcs.equals("BCBA") || lcs.equals("BDCA"),
                 "LCS result should be one of the valid longest subsequences"
         );
+
+        assertTrue(result.getMetrics().getEstimatedSpaceBytes() > 0);
     }
 }

@@ -19,6 +19,31 @@ import static org.junit.jupiter.api.Assertions.*;
 public class OutputFormatterTest {
 
     private static final String TEST_OUTPUT_FILE = "test_output_results.txt";
+    private Map<String, String> inputSequences;
+    private List<LCSResult> dynResults;
+    private List<LCSResult> bfResults;
+    private String outputContent;
+
+    @BeforeEach
+    void setup() throws IOException {
+        inputSequences = Map.of(
+                "S1", "ACGT",
+                "S2", "AGT",
+                "S3", "CG"
+        );
+
+        dynResults = new ArrayList<>();
+        bfResults = new ArrayList<>();
+
+        dynResults.add(mockResult("S1 vs S2", "ACGT", "AGT", "AGT", 5, 1, 16384));
+        dynResults.add(mockResult("S2 vs S3", "AGT", "CG", "G", 3, 1, 8192));
+
+        bfResults.add(mockResult("S1 vs S2", "ACGT", "AGT", "AGT", 25, 10, 20480));
+        bfResults.add(mockResult("S2 vs S3", "AGT", "CG", "G", 15, 8, 10240));
+
+        OutputFormatter.writeResults(inputSequences, dynResults, bfResults, TEST_OUTPUT_FILE);
+        outputContent = Files.readString(Path.of(TEST_OUTPUT_FILE));
+    }
 
     @AfterEach
     void cleanupFile() {
@@ -28,84 +53,86 @@ public class OutputFormatterTest {
         }
     }
 
-    /**
-     * Full test that checks input echo, both LCS algorithm outputs, matrix, and summary formatting.
-     */
     @Test
-    void testOutputFormatterWritesAllExpectedContent() throws IOException {
-        // === Prepare input sequences ===
-        Map<String, String> inputSequences = Map.of(
-                "S1", "ACGT",
-                "S2", "AGT",
-                "S3", "CG"
-        );
+    void testFileCreatedAndReadable() {
+        assertTrue(Files.exists(Path.of(TEST_OUTPUT_FILE)), "Output file should exist");
+        assertFalse(outputContent.isEmpty(), "Output file should not be empty");
+    }
 
-        // === Prepare mock results for S1 vs S2 and S2 vs S3 ===
-        List<LCSResult> dynResults = new ArrayList<>();
-        List<LCSResult> bfResults = new ArrayList<>();
+    @Test
+    void testInputSequenceEchoed() {
+        assertTrue(outputContent.contains("Number of sequences to be compared: 3"));
 
-        dynResults.add(mockResult("S1 vs S2", "ACGT", "AGT", "AGT", 5, 1));
-        dynResults.add(mockResult("S2 vs S3", "AGT", "CG", "G", 3, 1));
+        // Assert that all input sequences are present with their correct lengths
+        assertTrue(outputContent.contains("ACGT"), "Expected sequence ACGT to appear");
+        assertTrue(outputContent.contains("AGT"), "Expected sequence AGT to appear");
+        assertTrue(outputContent.contains("CG"), "Expected sequence CG to appear");
 
-        bfResults.add(mockResult("S1 vs S2", "ACGT", "AGT", "AGT", 25, 10));
-        bfResults.add(mockResult("S2 vs S3", "AGT", "CG", "G", 15, 8));
+        assertTrue(outputContent.contains("Length: 4"), "Expected length of 4 (ACGT)");
+        assertTrue(outputContent.contains("Length: 3"), "Expected length of 3 (AGT)");
+        assertTrue(outputContent.contains("Length: 2"), "Expected length of 2 (CG)");
+    }
 
-        // === Write the output ===
-        OutputFormatter.writeResults(inputSequences, dynResults, bfResults, TEST_OUTPUT_FILE);
+    @Test
+    void testPairwiseComparisonsPrinted() {
+        assertTrue(outputContent.contains("Comparing sequences S1 vs S2"));
+        assertTrue(outputContent.contains("Comparing sequences S2 vs S3"));
+    }
 
-        // === Confirm file created and readable ===
-        Path path = Path.of(TEST_OUTPUT_FILE);
-        assertTrue(Files.exists(path), "Expected output file to be created.");
+    @Test
+    void testLCSOutputPresent() {
+        assertTrue(outputContent.contains("Longest common subsequence | Length: 3"));
+        assertTrue(outputContent.contains("AGT"));
+        assertTrue(outputContent.contains("G"));
+    }
 
-        // === Read contents ===
-        String content = Files.readString(path);
+    @Test
+    void testMatrixPrinted() {
+        assertTrue(outputContent.contains("Printing out subsequence matrix"));
+        assertTrue(outputContent.contains("A G T"));
+        assertTrue(outputContent.contains("A "));
+    }
 
-        // === Validate input echo ===
-        assertTrue(content.contains("Number of sequences to be compared: 3"), "Should list input size");
-        assertTrue(content.contains("Sequence #1 | Length: " + inputSequences.get("S1").length()), "Should list correct S1 size");
-        assertTrue(content.contains("ACGT"), "Should echo sequence S1");
-        assertTrue(content.contains("AGT"), "Should echo sequence S2");
-        assertTrue(content.contains("CG"), "Should echo sequence S3");
+    @Test
+    void testAlgorithmHeadersPresent() {
+        assertTrue(outputContent.contains("-- Dynamic Programming LCS --"));
+        assertTrue(outputContent.contains("-- Brute Force LCS --"));
+    }
 
-        // === Validate pairwise comparison section ===
-        assertTrue(content.contains("Comparing sequences S1 vs S2"), "Missing comparison block for S1 vs S2");
-        assertTrue(content.contains("Comparing sequences S2 vs S3"), "Missing comparison block for S2 vs S3");
+    @Test
+    void testPerformanceMetricsPrinted() {
+        assertTrue(outputContent.contains("Comparisons: 25"));
+        assertTrue(outputContent.contains("Time (ms)"));
+        assertTrue(outputContent.contains("Space (MB)"));
+    }
 
-        // === Validate LCS summary ===
-        assertTrue(content.contains("Longest common subsequence | Length: 3"), "Missing LCS length for AGT");
-        assertTrue(content.contains("AGT"), "Missing LCS value AGT");
-        assertTrue(content.contains("G"), "Missing LCS value G");
+    @Test
+    void testScientificNotationSpaceMetric() {
+        assertTrue(outputContent.matches("(?s).*Space \\(MB\\).*1\\.\\d+e[+-]?\\d+.*"));
+    }
 
-        // === Validate matrix block ===
-        assertTrue(content.contains("Printing out subsequence matrix"), "Should include DP matrix section");
-        assertTrue(content.contains("A G T"), "Should include s2 header row");
-        assertTrue(content.contains("A "), "Should include s1 row");
-
-        // === Validate algorithm headers ===
-        assertTrue(content.contains("-- Dynamic Programming LCS --"), "Missing dynamic algorithm header");
-        assertTrue(content.contains("-- Brute Force LCS --"), "Missing brute force algorithm header");
-
-        // === Validate metrics section ===
-        assertTrue(content.contains("Comparisons: 25"), "Should show brute-force comparisons");
-        assertTrue(content.contains("Time (ms)"), "Should show brute-force time label");
-
-
-        // === Validate summary table ===
-        assertTrue(content.contains("Summary Table (Comparisons and Time)"), "Missing summary table header");
-        assertTrue(content.contains("S1 vs S2"), "Missing summary entry for S1 vs S2");
-        assertTrue(content.contains("S2 vs S3"), "Missing summary entry for S2 vs S3");
-        assertTrue(content.contains("| 3"), "Should include LCS length 3");
-        assertTrue(content.contains("| 1"), "Should include LCS length 1");
+    @Test
+    void testSummaryTablePresentAndCorrect() {
+        assertTrue(outputContent.contains("Summary Table (Comparisons, Time, and Space)"));
+        assertTrue(outputContent.contains("S1 vs S2"));
+        assertTrue(outputContent.contains("S2 vs S3"));
+        assertTrue(outputContent.contains("| 3"));
+        assertTrue(outputContent.contains("| 1"));
     }
 
     /**
      * Helper method to mock an LCSResult with fake metrics.
      */
     private LCSResult mockResult(String label, String s1, String s2, String lcs,
-                                 long comparisons, long timeMs) {
+                                 long comparisons, long timeMs, long spaceBytes) {
         PerformanceMetrics metrics = new PerformanceMetrics();
         metrics.addComparisons(comparisons);
+        metrics.setEstimatedSpaceBytes(spaceBytes);
         metrics.startTimer();
+        try {
+            Thread.sleep(timeMs);
+        } catch (InterruptedException ignored) {
+        }
         metrics.stopTimer();
         return new LCSResult(label, s1, s2, lcs, metrics);
     }

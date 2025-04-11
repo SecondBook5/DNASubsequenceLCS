@@ -2,20 +2,24 @@ package jhu.edu.algos.utils;
 
 /**
  * A utility class to track performance metrics for sequence alignment algorithms
- * such as the Longest Common Subsequence (LCS). It measures both the number of
- * character comparisons and the total elapsed execution time in milliseconds.
- *
+ * such as the Longest Common Subsequence (LCS). It tracks:
+ * - The number of character comparisons
+ * - Total execution time in milliseconds
+ * - Estimated space usage in bytes
  */
 public class PerformanceMetrics {
 
-    // Stores the system time (in nanoseconds) when the operation begins
+    // Time tracking
     private long startTime;
 
     // Stores the system time (in nanoseconds) when the operation ends
     private long endTime;
 
-    // Tracks the total number of character comparisons performed
+    // Comparison counter
     private long comparisonCount;
+
+    // Estimated space usage in bytes
+    private long estimatedSpaceBytes;
 
     /**
      * Default constructor initializes all performance counters and timers to zero.
@@ -23,17 +27,15 @@ public class PerformanceMetrics {
     public PerformanceMetrics() {
         // No start time has been set yet
         this.startTime = 0;
-
         // No end time has been recorded yet
         this.endTime = 0;
-
         // No comparisons have been counted yet
         this.comparisonCount = 0;
+        this.estimatedSpaceBytes = 0;
     }
 
     /**
      * Starts the timer by recording the current system time in nanoseconds.
-     *
      * This must be called before any computation begins.
      */
     public void startTimer() {
@@ -43,7 +45,6 @@ public class PerformanceMetrics {
 
     /**
      * Stops the timer by recording the current system time in nanoseconds.
-     *
      * This must be called after the computation is complete.
      * Throws an exception if startTimer() was never called.
      */
@@ -58,8 +59,28 @@ public class PerformanceMetrics {
     }
 
     /**
-     * Increments the character comparison counter by one.
+     * Retrieves the elapsed time in milliseconds between the last startTimer() and stopTimer() calls.
      *
+     * @return the time in milliseconds; returns 0 if timing is not valid
+     */
+    public long getElapsedTimeMs() {
+        if (startTime == 0 || endTime == 0) {
+            return 0;
+        }
+        return (endTime - startTime) / 1_000_000;
+    }
+
+    /**
+     * Retrieves the elapsed time in seconds (for scientific output).
+     *
+     * @return time in seconds as double
+     */
+    public double getElapsedTimeSeconds() {
+        return getElapsedTimeMs() / 1000.0;
+    }
+
+    /**
+     * Increments the character comparison counter by one.
      * This should be called every time a character comparison (e.g., A[i] == B[j]) is made.
      */
     public void incrementComparisonCount() {
@@ -94,24 +115,46 @@ public class PerformanceMetrics {
     }
 
     /**
-     * Retrieves the elapsed time in milliseconds between the last startTimer() and stopTimer() calls.
+     * Sets the estimated space usage in bytes.
      *
-     * @return the time in milliseconds; returns 0 if timing is not valid
+     * @param bytes estimated space used (must be non-negative)
      */
-    public long getElapsedTimeMs() {
-        // Return 0 if timer hasn't been started or stopped
-        if (startTime == 0 || endTime == 0) {
-            return 0;
+    public void setEstimatedSpaceBytes(long bytes) {
+        if (bytes < 0) {
+            throw new IllegalArgumentException("Space used cannot be negative.");
         }
+        this.estimatedSpaceBytes = bytes;
+    }
 
-        // Compute the elapsed time in milliseconds
-        return (endTime - startTime) / 1_000_000;
+    /**
+     * Retrieves the estimated space usage in bytes.
+     *
+     * @return estimated space usage
+     */
+    public long getEstimatedSpaceBytes() {
+        return this.estimatedSpaceBytes;
+    }
+
+    /**
+     * Retrieves the estimated space usage in kilobytes.
+     *
+     * @return estimated space in KB
+     */
+    public double getEstimatedSpaceKB() {
+        return estimatedSpaceBytes / 1024.0;
+    }
+
+    /**
+     * Retrieves the estimated space usage in megabytes.
+     *
+     * @return estimated space in MB
+     */
+    public double getEstimatedSpaceMB() {
+        return estimatedSpaceBytes / (1024.0 * 1024.0);
     }
 
     /**
      * Resets only the comparison count to zero.
-     *
-     * Useful if you want to reuse the timer but reset counting for a new operation.
      */
     public void resetComparisonCount() {
         // Reset the comparison counter to 0
@@ -119,14 +162,13 @@ public class PerformanceMetrics {
     }
 
     /**
-     * Resets all recorded metrics including timers and comparison count.
-     *
-     * Allows the object to be reused from a clean state.
+     * Resets all recorded metrics including timers, comparisons, and space.
      */
     public void resetAll() {
         // Reset all tracked metrics and timers
         this.startTime = 0;
         this.endTime = 0;
         this.comparisonCount = 0;
+        this.estimatedSpaceBytes = 0;
     }
 }

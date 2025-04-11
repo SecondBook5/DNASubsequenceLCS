@@ -28,14 +28,22 @@ public class LCSBruteForce extends AbstractLCS {
         // Start tracking time
         metrics.startTimer();
 
-        // Validate inputs
-        if (s1 == null || s2 == null) {
-            throw new IllegalArgumentException("Input strings cannot be null.");
+        // Validate input: null or empty strings are not allowed
+        if (s1 == null || s2 == null || s1.isEmpty() || s2.isEmpty()) {
+            throw new IllegalArgumentException("Input sequences must not be null or empty.");
         }
 
         // Choose the shorter string to reduce the search space
         String shorter = s1.length() <= s2.length() ? s1 : s2;
         String longer = s1.length() > s2.length() ? s1 : s2;
+
+        // Estimate memory:
+        // - StringBuilder buffer for current subsequence
+        // - O(2^n) recursive calls × estimated frame size
+        int n = shorter.length();
+        long candidateBufferBytes = 2L * n * Character.BYTES;
+        long estimatedStackBytes = (long) Math.pow(2, n) * 64; // ~64 bytes per stack frame
+        metrics.setEstimatedSpaceBytes(candidateBufferBytes + estimatedStackBytes);
 
         // Reset best result
         bestLCS = "";

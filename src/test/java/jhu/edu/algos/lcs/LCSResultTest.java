@@ -39,6 +39,7 @@ public class LCSResultTest {
         // Create and pre-populate metrics with mock values
         metrics = new PerformanceMetrics();
         metrics.addComparisons(42); // Simulate 42 comparisons
+        metrics.setEstimatedSpaceBytes(20480); // 20 KB of space
         metrics.startTimer();
         metrics.stopTimer(); // Stop immediately for zero-time mock
 
@@ -79,6 +80,8 @@ public class LCSResultTest {
     void testPerformanceMetrics() {
         assertEquals(42, result.getMetrics().getComparisonCount());
         assertTrue(result.getMetrics().getElapsedTimeMs() >= 0);
+        assertEquals(20480, result.getMetrics().getEstimatedSpaceBytes());
+        assertTrue(result.getMetrics().getEstimatedSpaceMB() > 0);
     }
 
     @Test
@@ -102,5 +105,11 @@ public class LCSResultTest {
         assertTrue(output.contains("LCS    : AGT"));
         assertTrue(output.contains("Length : 3"));
         assertTrue(output.contains("Comparisons: 42"));
+        assertTrue(output.contains("Time (ms)"));
+        assertTrue(output.contains("Space (MB)"));
+
+        // Validate scientific notation format
+        assertTrue(output.matches("(?s).*Space \\(MB\\)\\s*:\\s*\\d\\.\\d{3}e[+-]?\\d+.*"),
+                "Expected space output in scientific notation format");
     }
 }

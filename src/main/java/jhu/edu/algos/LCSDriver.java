@@ -63,6 +63,11 @@ public class LCSDriver {
         AbstractLCS dynAlg = new LCSDynamic();
         AbstractLCS bruteAlg = new LCSBruteForce();
 
+        long totalDynTime = 0;
+        long totalDynSpace = 0;
+        long totalBFTime = 0;
+        long totalBFSpace = 0;
+
         // Step 3: Compute all pairwise LCS results
         for (int i = 0; i < keys.size(); i++) {
             for (int j = i + 1; j < keys.size(); j++) {
@@ -78,10 +83,28 @@ public class LCSDriver {
 
                 dynamicResults.add(dynResult);
                 bruteForceResults.add(bruteResult);
+
+                totalDynTime += dynResult.getMetrics().getElapsedTimeMs();
+                totalDynSpace += dynResult.getMetrics().getEstimatedSpaceBytes();
+                totalBFTime += bruteResult.getMetrics().getElapsedTimeMs();
+                totalBFSpace += bruteResult.getMetrics().getEstimatedSpaceBytes();
             }
         }
 
         // Step 4: Output results to file and console
         OutputFormatter.writeResults(inputSequences, dynamicResults, bruteForceResults, outputFile);
+
+        // Step 5: Append performance summary to the output file
+        OutputFormatter.appendPerformanceSummary(
+                totalDynTime, totalDynSpace, totalBFTime, totalBFSpace, outputFile
+        );
+
+        // Step 6: Also print to console
+        System.out.println("\n===== Aggregate Performance Summary =====");
+        System.out.printf("Dynamic Programming: Total Time = %d ms | Total Space = %.3f MB%n",
+                totalDynTime, totalDynSpace / 1_000_000.0);
+        System.out.printf("Brute Force        : Total Time = %d ms | Total Space = %.3f MB%n",
+                totalBFTime, totalBFSpace / 1_000_000.0);
+        System.out.println("==========================================");
     }
 }

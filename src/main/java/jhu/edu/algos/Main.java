@@ -1,12 +1,14 @@
 package jhu.edu.algos;
 
+import jhu.edu.algos.benchmark.ScalingBenchmark;
+
 /**
  * Main.java serves as the command-line entry point and dispatcher for
  * the DNASubsequenceLCS project. Supports both comparison and scaling modes.
- *
+ * <p>
  * Usage:
  *   java Main compare <input_file.txt> <output_file.txt>
- *   java Main benchmark <output_file.csv> [--plot]
+ *   java Main benchmark <output_file.txt> [--plot]
  */
 public class Main {
 
@@ -45,25 +47,25 @@ public class Main {
                     break;
 
                 case "benchmark":
-                    // Benchmark mode requires a CSV output file and optional --plot flag
+                    // Benchmark mode requires a .txt output file and optional --plot flag
                     if (args.length < 2 || args.length > 3) {
-                        System.err.println("Usage: java Main benchmark <output_file.csv> [--plot]");
+                        System.err.println("Usage: java Main benchmark <output_file.txt> [--plot]");
                         System.exit(1);
                     }
 
-                    String csvFile = args[1];
+                    String txtFile = args[1];
                     boolean plot = args.length == 3 && args[2].equalsIgnoreCase("--plot");
 
-                    if (!csvFile.endsWith(".csv")) {
-                        System.err.println("Error: Benchmark output file must be a .csv file.");
+                    if (!txtFile.endsWith(".txt")) {
+                        System.err.println("Error: Benchmark output file must be a .txt file.");
                         System.exit(1);
                     }
 
-                    // Derive PNG output file from CSV if plot flag is used
-                    String pngFile = csvFile.replaceAll("\\.csv$", "_plot.png");
+                    // Derive PNG output file from .txt
+                    String pngFile = txtFile.replaceAll("\\.txt$", "_plot.png");
 
                     // Dispatch to benchmark module
-                    ScalingBenchmark.run(csvFile, pngFile, plot);
+                    ScalingBenchmark.run(txtFile, pngFile, plot);
                     break;
 
                 default:
@@ -85,15 +87,9 @@ public class Main {
 
             // Print summarized stack trace
             StackTraceElement[] trace = e.getStackTrace();
-            if (trace.length > 0) {
-                System.err.println(" Location: " + trace[0]);
-            }
-            if (trace.length > 1) {
-                System.err.println("            " + trace[1]);
-            }
-            if (trace.length > 2) {
-                System.err.println("            " + trace[2]);
-            }
+            if (trace.length > 0) System.err.println(" Location: " + trace[0]);
+            if (trace.length > 1) System.err.println("            " + trace[1]);
+            if (trace.length > 2) System.err.println("            " + trace[2]);
 
             System.exit(1);
         }
@@ -105,7 +101,7 @@ public class Main {
     private static void printUsageAndExit() {
         System.err.println("Usage:");
         System.err.println("  java Main compare <input_file.txt> <output_file.txt>");
-        System.err.println("  java Main benchmark <output_file.csv> [--plot]");
+        System.err.println("  java Main benchmark <output_file.txt> [--plot]");
         System.exit(1);
     }
 }

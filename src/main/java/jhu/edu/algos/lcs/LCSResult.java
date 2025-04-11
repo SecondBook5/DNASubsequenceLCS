@@ -104,6 +104,7 @@ public class LCSResult {
                 Length : %d
                 Comparisons: %d
                 Time (ms)  : %d
+                Space (MB) : %.3e
                 """,
                 comparisonLabel,
                 s1,
@@ -111,7 +112,8 @@ public class LCSResult {
                 lcs,
                 getLCSLength(),
                 metrics.getComparisonCount(),
-                metrics.getElapsedTimeMs()
+                metrics.getElapsedTimeMs(),
+                metrics.getEstimatedSpaceMB()
         );
     }
 }
