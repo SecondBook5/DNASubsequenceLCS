@@ -203,4 +203,55 @@ public class OutputFormatter {
             System.err.println("Error appending performance summary to file: " + e.getMessage());
         }
     }
+
+    /**
+     * Prints a symmetric LCS length matrix based on dynamic results.
+     * Labels are taken from the inputSequences map.
+     *
+     * @param inputSequences Map of input keys and sequences (S1, S2, etc.)
+     * @param dynamicResults List of LCSResult objects from dynamic programming
+     */
+    public static void printLCSMatrix(Map<String, String> inputSequences, List<LCSResult> dynamicResults) {
+        System.out.println("\n===== LCS Length Matrix (Dynamic Programming) =====");
+
+        List<String> labels = new ArrayList<>(inputSequences.keySet());
+        int n = labels.size();
+
+        // Create matrix to hold LCS lengths
+        String[][] matrix = new String[n][n];
+
+        // Fill matrix with results
+        int index = 0;
+        for (int i = 0; i < n; i++) {
+            matrix[i][i] = "--"; // self comparison
+            for (int j = i + 1; j < n; j++) {
+                if (index >= dynamicResults.size()) {
+                    matrix[i][j] = "??"; // fallback for missing results
+                    matrix[j][i] = "??";
+                } else {
+                    LCSResult res = dynamicResults.get(index++);
+                    matrix[i][j] = String.valueOf(res.getLCSLength());
+                    matrix[j][i] = matrix[i][j]; // symmetric
+                }
+            }
+        }
+
+        // Print header
+        System.out.printf("%-6s", "");
+        for (String colLabel : labels) {
+            System.out.printf("%-8s", colLabel);
+        }
+        System.out.println();
+
+        // Print each row
+        for (int i = 0; i < n; i++) {
+            System.out.printf("%-6s", labels.get(i));
+            for (int j = 0; j < n; j++) {
+                System.out.printf("%-8s", matrix[i][j] == null ? "" : matrix[i][j]);
+            }
+            System.out.println();
+        }
+
+        System.out.println("===================================================\n");
+    }
 }

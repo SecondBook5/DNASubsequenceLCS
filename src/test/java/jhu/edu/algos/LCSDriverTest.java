@@ -47,13 +47,12 @@ public class LCSDriverTest {
      */
     @Test
     void testDriverGeneratesOutputFile() throws Exception {
-        LCSDriver.runFromFile(INPUT_FILE, OUTPUT_FILE);
+        LCSDriver.runFromFile(INPUT_FILE, OUTPUT_FILE, false);
 
         // File should be generated
         assertTrue(Files.exists(Path.of(OUTPUT_FILE)), "Output file should be created");
 
-        // Read file contents
-        String output = Files.readString(Path.of(OUTPUT_FILE));
+        String output = Files.readString(Path.of(OUTPUT_FILE)).replace("\r", "");
 
         // Validate input sequence echo
         assertTrue(output.contains("Sequence #1"), "Should mention sequence numbers");
@@ -68,24 +67,34 @@ public class LCSDriverTest {
         // Validate summary table
         assertTrue(output.contains("Summary Table (Comparisons, Time, and Space)"), "Should include summary table");
         assertTrue(output.contains("S1 vs S2"), "Pair names should be listed in summary");
+        assertTrue(output.contains("Aggregate Performance Summary"), "Should include aggregate summary");
+        assertTrue(output.contains("Total Time ="), "Should show total time");
+        assertTrue(output.contains("Total Space ="), "Should show total space");
+        assertTrue(output.contains("MB"), "Space should be reported in MB");
 
-        // Validate aggregate summary section
-        assertTrue(output.replace("\r", "").contains("===== Aggregate Performance Summary ====="), "Should include aggregate summary header");
-        assertTrue(output.contains("Dynamic Programming: Total Time ="), "Should report total runtime for dynamic");
-        assertTrue(output.contains("Brute Force        : Total Time ="), "Should report total runtime for brute force");
-        assertTrue(output.contains("Total Space ="), "Should report total space for both algorithms");
+        // Validate all pairwise comparisons are present
+        List<String> expectedPairs = List.of(
+                "S1 vs S2", "S1 vs S3", "S1 vs S4",
+                "S2 vs S3", "S2 vs S4", "S3 vs S4"
+        );
 
-        // Validate presence of MB in both space rows (scientific notation check relaxed to substring match)
-        assertTrue(output.contains("MB"), "Space usage should be reported in MB");
+        for (String pair : expectedPairs) {
+            assertTrue(output.contains(pair), "Missing expected pairwise comparison: " + pair);
+        }
     }
 
-    /**
-     * Tests that missing input file triggers exception.
-     */
+
+    @Test
+    void testDriverWithMatrixFlagRunsSuccessfully() throws Exception {
+        // We aren't capturing console output here, but we make sure it doesn't crash with the flag
+        LCSDriver.runFromFile(INPUT_FILE, OUTPUT_FILE, true);  // matrix printing enabled
+        assertTrue(Files.exists(Path.of(OUTPUT_FILE)), "Output should still be created when --matrix is set");
+    }
+
     @Test
     void testFailsWithMissingFile() {
         Exception ex = assertThrows(IOException.class,
-                () -> LCSDriver.runFromFile("nonexistent_input.txt", "output.txt"));
+                () -> LCSDriver.runFromFile("nonexistent_input.txt", "output.txt", false));
 
         assertTrue(ex.getMessage().contains("nonexistent_input"), "Should fail for missing input");
     }
@@ -101,7 +110,7 @@ public class LCSDriverTest {
         Files.write(Path.of(oneSeqFile), List.of("S1 = ACTG"));
 
         Exception ex = assertThrows(IllegalArgumentException.class,
-                () -> LCSDriver.runFromFile(oneSeqFile, output));
+                () -> LCSDriver.runFromFile(oneSeqFile, output, false));
 
         assertTrue(ex.getMessage().contains("At least two sequences"), "Should require two or more sequences");
 

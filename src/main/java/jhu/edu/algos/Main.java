@@ -5,9 +5,9 @@ import jhu.edu.algos.benchmark.ScalingBenchmark;
 /**
  * Main.java serves as the command-line entry point and dispatcher for
  * the DNASubsequenceLCS project. Supports both comparison and scaling modes.
- * <p>
+ *
  * Usage:
- *   java Main compare <input_file.txt> <output_file.txt>
+ *   java Main compare <input_file.txt> <output_file.txt> [--matrix]
  *   java Main benchmark <output_file.txt> [--plot]
  */
 public class Main {
@@ -27,14 +27,15 @@ public class Main {
         try {
             switch (mode) {
                 case "compare":
-                    // Compare mode requires input and output .txt files
-                    if (args.length != 3) {
-                        System.err.println("Usage: java Main compare <input_file.txt> <output_file.txt>");
+                    // Accepts input file, output file, and optional --matrix flag
+                    if (args.length < 3 || args.length > 4) {
+                        System.err.println("Usage: java Main compare <input_file.txt> <output_file.txt> [--matrix]");
                         System.exit(1);
                     }
 
                     String inputFile = args[1];
                     String outputFile = args[2];
+                    boolean showMatrix = args.length == 4 && args[3].equalsIgnoreCase("--matrix");
 
                     // Validate extensions
                     if (!inputFile.endsWith(".txt") || !outputFile.endsWith(".txt")) {
@@ -43,11 +44,11 @@ public class Main {
                     }
 
                     // Dispatch to comparison driver
-                    LCSDriver.runFromFile(inputFile, outputFile);
+                    LCSDriver.runFromFile(inputFile, outputFile, showMatrix);
                     break;
 
                 case "benchmark":
-                    // Benchmark mode requires a .txt output file and optional --plot flag
+                    // Accepts output file and optional --plot flag
                     if (args.length < 2 || args.length > 3) {
                         System.err.println("Usage: java Main benchmark <output_file.txt> [--plot]");
                         System.exit(1);
@@ -76,7 +77,7 @@ public class Main {
         } catch (Exception e) {
             System.err.println(" Fatal error: " + e.getClass().getSimpleName() + " - " + e.getMessage());
 
-            // Suggest remedies for known error types
+            // Helpful diagnostics
             if (e instanceof IllegalArgumentException) {
                 System.err.println(" Tip: Check that your input file format and arguments are correct.");
             } else if (e instanceof java.io.FileNotFoundException) {
@@ -96,11 +97,11 @@ public class Main {
     }
 
     /**
-     * Prints help and exits.
+     * Prints help instructions and exits.
      */
     private static void printUsageAndExit() {
         System.err.println("Usage:");
-        System.err.println("  java Main compare <input_file.txt> <output_file.txt>");
+        System.err.println("  java Main compare <input_file.txt> <output_file.txt> [--matrix]");
         System.err.println("  java Main benchmark <output_file.txt> [--plot]");
         System.exit(1);
     }

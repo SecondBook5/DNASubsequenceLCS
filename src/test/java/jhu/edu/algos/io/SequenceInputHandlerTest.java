@@ -1,10 +1,9 @@
 package jhu.edu.algos.io;
 
 import org.junit.jupiter.api.*;
+
 import java.io.*;
-import java.util.Map;
-import java.util.List;
-import java.util.Arrays;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -65,7 +64,24 @@ public class SequenceInputHandlerTest {
             assertEquals(expectedSeq, result.get(label), "Incorrect sequence for label: " + label);
         }
 
-        System.out.println("✅ Retrieval test passed for all expected sequences.");
+        System.out.println(" Retrieval test passed for all expected sequences.");
+    }
+
+    @Test
+    void testInsertionOrderPreserved() throws Exception {
+        String path = TEMP_DIR + "/ordered.txt";
+        List<String> expectedLabels = List.of("S3", "S1", "S2");
+        writeToFile(path,
+                """
+                        S3 = GATTACA
+                        S1 = ACTG
+                        S2 = CGTA"""
+        );
+
+        Map<String, String> result = SequenceInputHandler.readSequencesFromFile(path);
+        List<String> actualLabels = new ArrayList<>(result.keySet());
+
+        assertEquals(expectedLabels, actualLabels, "Insertion order of sequence labels should be preserved.");
     }
 
     @Test

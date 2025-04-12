@@ -15,16 +15,21 @@ public class LCSDriver {
 
     /**
      * CLI entry point for running pairwise LCS comparisons.
-     * Accepts two arguments: input file and output file.
+     * Accepts arguments:
+     *   <input.txt> <output.txt> [--matrix]
      */
     public static void main(String[] args) {
-        if (args.length != 2) {
-            System.err.println("Usage: java LCSDriver <input_file.txt> <output_file.txt>");
+        if (args.length < 2 || args.length > 3) {
+            System.err.println("Usage: java LCSDriver <input_file.txt> <output_file.txt> [--matrix]");
             System.exit(1);
         }
 
+        String inputFile = args[0];
+        String outputFile = args[1];
+        boolean showMatrix = args.length == 3 && args[2].equals("--matrix");
+
         try {
-            runFromFile(args[0], args[1]);
+            runFromFile(inputFile, outputFile, showMatrix);
         } catch (IllegalArgumentException e) {
             System.err.println("Input Error: " + e.getMessage());
             System.exit(1);
@@ -38,19 +43,18 @@ public class LCSDriver {
      * Runs the LCS comparison on all pairwise combinations of sequences from the input file.
      * Results are written to both the console and the specified output file.
      *
-     * @param inputFile  Path to the input file (must contain at least two sequences).
-     * @param outputFile Path to the output file (.txt) where results are saved.
-     * @throws Exception if the input is invalid or comparison fails.
+     * @param inputFile   Path to the input file (must contain at least two sequences).
+     * @param outputFile  Path to the output file (.txt) where results are saved.
+     * @param showMatrix  Whether to print the LCS length matrix to console.
+     * @throws Exception  if the input is invalid or comparison fails.
      */
-    public static void runFromFile(String inputFile, String outputFile) throws Exception {
-        // Enforce output format to end in .txt
+    public static void runFromFile(String inputFile, String outputFile, boolean showMatrix) throws Exception {
         if (!outputFile.endsWith(".txt")) {
             throw new IllegalArgumentException("Output file must have a .txt extension.");
         }
 
         // Step 1: Load and validate input sequences
         Map<String, String> inputSequences = SequenceInputHandler.readSequencesFromFile(inputFile);
-
         if (inputSequences.size() < 2) {
             throw new IllegalArgumentException("At least two sequences are required for comparison.");
         }
@@ -106,5 +110,10 @@ public class LCSDriver {
         System.out.printf("Brute Force        : Total Time = %d ms | Total Space = %.3f MB%n",
                 totalBFTime, totalBFSpace / 1_000_000.0);
         System.out.println("==========================================");
+
+        // Step 7: Print LCS matrix if requested
+        if (showMatrix) {
+            OutputFormatter.printLCSMatrix(inputSequences, dynamicResults);
+        }
     }
 }

@@ -3,7 +3,7 @@ package jhu.edu.algos.io;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -18,16 +18,17 @@ import java.util.Map;
 public class SequenceInputHandler {
 
     /**
-     * Reads a file containing labeled DNA sequences and returns them in a map.
+     * Reads a file containing labeled DNA sequences and returns them in an ordered map.
      * The file must contain one sequence per line, in the format "Label = SEQUENCE".
      *
      * @param filePath The path to the input file containing the DNA sequences.
-     * @return A Map where keys are sequence labels (e.g., "S1") and values are DNA sequences.
+     * @return A LinkedHashMap where keys are sequence labels (e.g., "S1") and values are DNA sequences.
+     *         The insertion order is preserved.
      * @throws IOException If an error occurs while reading the file or if the file format is invalid.
      */
     public static Map<String, String> readSequencesFromFile(String filePath) throws IOException {
-        // Create a map to store the parsed sequences
-        Map<String, String> sequenceMap = new HashMap<>();
+        // Use LinkedHashMap to preserve insertion order
+        Map<String, String> sequenceMap = new LinkedHashMap<>();
 
         // Use BufferedReader to read the file line by line
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
