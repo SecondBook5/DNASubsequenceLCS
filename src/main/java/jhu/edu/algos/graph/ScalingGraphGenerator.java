@@ -48,20 +48,21 @@ public class ScalingGraphGenerator {
             return;
         }
 
-        // Filter and map non-null brute force results
+        // === Map brute force results by label ===
         Map<String, LCSResult> bruteMap = bruteForceResults.stream()
                 .filter(Objects::nonNull)
                 .collect(Collectors.toMap(LCSResult::getComparisonLabel, r -> r));
 
-        // === Filter out nulls before curve fitting ===
+        // === Filter out nulls for fitting ===
         List<LCSResult> cleanedBrute = bruteForceResults.stream()
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
-        // Fit scaling curves
+        // === Fit scaling models ===
         double cDynamic = CurveFitter.fitPowerLaw(dynamicResults, 2.0);
         double cBrute = cleanedBrute.isEmpty() ? 0.0 : CurveFitter.fitExponential(cleanedBrute);
 
+        // === Print scaling models to terminal ===
         System.out.printf("%n==== Fitted Scaling Models ====%n");
         System.out.printf("Dynamic Programming: T(n) ≈ %.5f · n²%n", cDynamic);
         if (!cleanedBrute.isEmpty()) {
@@ -71,7 +72,7 @@ public class ScalingGraphGenerator {
         }
         System.out.println("================================\n");
 
-        // Prepare plot series
+        // === Prepare chart series ===
         XYSeries dynActual = new XYSeries("Actual: Dynamic Programming");
         XYSeries bfActual = new XYSeries("Actual: Brute Force");
         XYSeries expectedN2 = new XYSeries("Expected: O(n²)");
@@ -79,27 +80,27 @@ public class ScalingGraphGenerator {
         XYSeries fittedN2 = new XYSeries("Fitted: c·n²");
         XYSeries fitted2N = new XYSeries("Fitted: c·2ⁿ");
 
-        int pairIndex = 1;
         for (LCSResult dyn : dynamicResults) {
             String label = dyn.getComparisonLabel();
             LCSResult bf = bruteMap.get(label);
 
-            double x = pairIndex++;
-            long dynComp = dyn.getMetrics().getComparisonCount();
+            // === Extract L from label pattern like "L30_P1" ===
+            int L = extractLengthFromLabel(label);
 
-            dynActual.add(x, dynComp);
-            expectedN2.add(x, x * x);
-            fittedN2.add(x, cDynamic * x * x);
+            long dynComp = dyn.getMetrics().getComparisonCount();
+            dynActual.add(L, dynComp);
+            expectedN2.add(L, Math.pow(L, 2));
+            fittedN2.add(L, cDynamic * Math.pow(L, 2));
 
             if (bf != null) {
                 long bfComp = bf.getMetrics().getComparisonCount();
-                bfActual.add(x, bfComp);
-                expected2N.add(x, Math.pow(2, x));
-                fitted2N.add(x, cBrute * Math.pow(2, x));
+                bfActual.add(L, bfComp);
+                expected2N.add(L, Math.pow(2, L));
+                fitted2N.add(L, cBrute * Math.pow(2, L));
             }
         }
 
-        // === Build dataset ===
+        // === Combine all series into the dataset ===
         XYSeriesCollection dataset = new XYSeriesCollection();
         dataset.addSeries(dynActual);
         dataset.addSeries(bfActual);
@@ -108,26 +109,26 @@ public class ScalingGraphGenerator {
         dataset.addSeries(fittedN2);
         dataset.addSeries(fitted2N);
 
-        // === Create chart ===
+        // === Build the chart ===
         JFreeChart chart = ChartFactory.createXYLineChart(
-                "LCS Comparison Count vs Pair Index",
-                "Pair Index (increasing comparisons)",
+                "LCS Comparison Count vs Sequence Length",
+                "Sequence Length (L)",
                 "Character Comparisons",
                 dataset,
                 PlotOrientation.VERTICAL,
                 true, true, false
         );
 
-        // === Customize rendering ===
+        // === Customize plot rendering ===
         XYPlot plot = chart.getXYPlot();
         XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
 
         renderer.setSeriesPaint(0, Color.BLUE);     // Actual DP
         renderer.setSeriesPaint(1, Color.RED);      // Actual BF
-        renderer.setSeriesPaint(2, Color.GREEN);    // Expected n²
-        renderer.setSeriesPaint(3, Color.ORANGE);   // Expected 2ⁿ
-        renderer.setSeriesPaint(4, Color.CYAN);     // Fitted c·n²
-        renderer.setSeriesPaint(5, Color.MAGENTA);  // Fitted c·2ⁿ
+        renderer.setSeriesPaint(2, Color.GREEN);    // Expected O(n²)
+        renderer.setSeriesPaint(3, Color.ORANGE);   // Expected O(2ⁿ)
+        renderer.setSeriesPaint(4, Color.CYAN);     // Fitted n²
+        renderer.setSeriesPaint(5, Color.MAGENTA);  // Fitted 2ⁿ
 
         for (int i = 0; i < dataset.getSeriesCount(); i++) {
             renderer.setSeriesShapesVisible(i, true);
@@ -136,18 +137,17 @@ public class ScalingGraphGenerator {
 
         plot.setRenderer(renderer);
         plot.setBackgroundPaint(Color.WHITE);
-        plot.setDomainGridlinePaint(Color.GRAY);
-        plot.setRangeGridlinePaint(Color.GRAY);
+        plot.setDomainGridlinePaint(Color.LIGHT_GRAY);
+        plot.setRangeGridlinePaint(Color.LIGHT_GRAY);
 
-        // Add annotations to data points
-        pairIndex = 1;
+        // === Annotate points ===
         for (LCSResult dyn : dynamicResults) {
             String label = dyn.getComparisonLabel();
             LCSResult bf = bruteMap.get(label);
-            double x = pairIndex++;
+            int L = extractLengthFromLabel(label);
 
             long dynComp = dyn.getMetrics().getComparisonCount();
-            XYTextAnnotation dynNote = new XYTextAnnotation("Dyn: " + dynComp, x, dynComp);
+            XYTextAnnotation dynNote = new XYTextAnnotation("Dyn: " + dynComp, L, dynComp);
             dynNote.setPaint(Color.BLUE);
             dynNote.setFont(new Font("SansSerif", Font.PLAIN, 10));
             dynNote.setTextAnchor(TextAnchor.BOTTOM_RIGHT);
@@ -156,7 +156,7 @@ public class ScalingGraphGenerator {
             // Brute force annotation (only if data exists)
             if (bf != null) {
                 long bfComp = bf.getMetrics().getComparisonCount();
-                XYTextAnnotation bfNote = new XYTextAnnotation("BF: " + bfComp, x, bfComp);
+                XYTextAnnotation bfNote = new XYTextAnnotation("BF: " + bfComp, L, bfComp);
                 bfNote.setPaint(Color.RED);
                 bfNote.setFont(new Font("SansSerif", Font.PLAIN, 10));
                 bfNote.setTextAnchor(TextAnchor.BOTTOM_LEFT);
@@ -171,5 +171,20 @@ public class ScalingGraphGenerator {
         } catch (IOException e) {
             System.err.println("Error saving graph: " + e.getMessage());
         }
+    }
+
+    /**
+     * Extracts the sequence length L from a label like "L30_P1".
+     * Returns -1 if the format is invalid.
+     */
+    private static int extractLengthFromLabel(String label) {
+        try {
+            int start = label.indexOf('L') + 1;
+            int end = label.indexOf('_');
+            if (start > 0 && end > start) {
+                return Integer.parseInt(label.substring(start, end));
+            }
+        } catch (Exception ignored) {}
+        return -1;
     }
 }

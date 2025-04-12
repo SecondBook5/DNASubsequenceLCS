@@ -46,7 +46,7 @@ public class ScalingBenchmarkTest {
      */
     @Test
     void testRunWithoutPlotGeneratesTxtOnly() throws Exception {
-        ScalingBenchmark.run(TXT_PATH, PLOT_PATH, false);
+        ScalingBenchmark.run(TXT_PATH, PLOT_PATH, false, 10, 30, 10, 2);  // limited test range
 
         assertTrue(Files.exists(Path.of(TXT_PATH)), "Expected .txt benchmark file to be generated.");
         assertFalse(Files.exists(Path.of(PLOT_PATH)), "Plot should not be generated without the --plot flag.");
@@ -55,19 +55,20 @@ public class ScalingBenchmarkTest {
         assertFalse(lines.isEmpty(), "Output text file should not be empty.");
 
         // Check header
-        assertTrue(lines.stream().anyMatch(line -> line.contains("Scaling Benchmark Report")), "Should include benchmark header.");
+        assertTrue(lines.stream().anyMatch(line -> line.contains("Scaling Benchmark Report")),
+                "Should include benchmark header.");
 
-
-        // Check header row
+        // Check column headers
         assertTrue(lines.stream().anyMatch(line ->
-                        line.contains("Pair") && line.contains("Dyn_Comparisons") && line.contains("BF_Comparisons")),
-                "Header row should include metrics columns."
-        );
+                        line.contains("Pair") &&
+                                line.contains("Dyn_Comparisons") &&
+                                line.contains("BF_Comparisons")),
+                "Header row should include metric labels.");
 
-        // Check that at least one pair row includes numbers
+        // At least one line should show a numerical benchmark value
         assertTrue(lines.stream().anyMatch(line ->
-                        line.matches(".*\\d+\\s+\\|\\s+Pair_\\d+.*\\d+.*")),
-                "At least one result row should contain numeric benchmark values.");
+                        line.matches(".*\\|\\s+Pair_\\d+.*\\d+.*")),
+                "At least one result line should show numeric output.");
     }
 
     /**
@@ -75,7 +76,7 @@ public class ScalingBenchmarkTest {
      */
     @Test
     void testRunWithPlotGeneratesTxtAndPlot() throws Exception {
-        ScalingBenchmark.run(TXT_PATH, PLOT_PATH, true);
+        ScalingBenchmark.run(TXT_PATH, PLOT_PATH, true, 10, 30, 10, 2);
 
         assertTrue(Files.exists(Path.of(TXT_PATH)), "Benchmark text file should be created.");
         assertTrue(Files.exists(Path.of(PLOT_PATH)), "PNG plot image should be created.");
@@ -94,16 +95,18 @@ public class ScalingBenchmarkTest {
      */
     @Test
     void testBruteForceSkipMarkers() throws Exception {
-        ScalingBenchmark.run(TXT_PATH, PLOT_PATH, false);
+        ScalingBenchmark.run(TXT_PATH, PLOT_PATH, false, 10, 60, 10, 2);  // test through cap and beyond
 
         List<String> lines = Files.readAllLines(Path.of(TXT_PATH));
 
         boolean hasSkipMarker = lines.stream().anyMatch(line ->
-                line.contains("|") && line.contains("-") && line.contains("BF_Time(ms)"));
+                line.contains(" - ") && line.contains("BF_Comparisons"));
 
-        boolean hasBruteForce = lines.stream().anyMatch(line ->
+        boolean hasMeasuredBF = lines.stream().anyMatch(line ->
                 line.matches(".*\\|\\s+Pair_\\d+.*\\d+.*\\d+.*\\d+.*\\d+.*"));
 
-        assertTrue(hasSkipMarker || hasBruteForce, "There should be some brute-force skips (with '-') and some measured pairs.");
+        assertTrue(hasMeasuredBF, "Should have some valid brute-force entries.");
+        assertTrue(lines.stream().anyMatch(line -> line.contains("-")),
+                "Should contain '-' to indicate BF skipped beyond safe length.");
     }
 }
