@@ -9,6 +9,7 @@ import org.jfree.chart.annotations.XYTextAnnotation;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+import org.jfree.chart.title.TextTitle;
 import org.jfree.chart.ui.TextAnchor;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
@@ -29,7 +30,7 @@ import java.util.stream.Collectors;
  * - Fitted models and annotations
  * - Prints the explicit fitted curve formulas
  */
-public class ScalingGraphGenerator {
+public class LScalingGraphGenerator {
 
     /**
      * Generates a comparative plot of dynamic and brute force LCS comparison counts.
@@ -64,21 +65,21 @@ public class ScalingGraphGenerator {
 
         // === Print scaling models to terminal ===
         System.out.printf("%n==== Fitted Scaling Models ====%n");
-        System.out.printf("Dynamic Programming: T(n) ≈ %.5f · n²%n", cDynamic);
+        System.out.printf("Dynamic Programming: T(L) ≈ %.5f · L²%n", cDynamic);
         if (!cleanedBrute.isEmpty()) {
-            System.out.printf("Brute Force        : T(n) ≈ %.5f · 2ⁿ%n", cBrute);
+            System.out.printf("Brute Force        : T(L) ≈ %.5f · 2^L%n", cBrute);
         } else {
             System.out.println("Brute Force        : No data available for fitting.");
         }
         System.out.println("================================\n");
 
         // === Prepare chart series ===
-        XYSeries dynActual = new XYSeries("Actual: Dynamic Programming");
-        XYSeries bfActual = new XYSeries("Actual: Brute Force");
-        XYSeries expectedN2 = new XYSeries("Expected: O(n²)");
-        XYSeries expected2N = new XYSeries("Expected: O(2ⁿ)");
-        XYSeries fittedN2 = new XYSeries("Fitted: c·n²");
-        XYSeries fitted2N = new XYSeries("Fitted: c·2ⁿ");
+        XYSeries dynActual = new XYSeries("Observed: Dynamic Programming");
+        XYSeries bfActual = new XYSeries("Observed: Brute Force");
+        XYSeries expectedN2 = new XYSeries("Theoretical: O(L²)");
+        XYSeries expected2N = new XYSeries("Theoretical: O(2^L)");
+        XYSeries fittedN2 = new XYSeries("Fitted: c·L²");
+        XYSeries fitted2N = new XYSeries("Fitted: c·2^L");
 
         for (LCSResult dyn : dynamicResults) {
             String label = dyn.getComparisonLabel();
@@ -86,6 +87,7 @@ public class ScalingGraphGenerator {
 
             // === Extract L from label pattern like "L30_P1" ===
             int L = extractLengthFromLabel(label);
+            if (L == -1) continue;
 
             long dynComp = dyn.getMetrics().getComparisonCount();
             dynActual.add(L, dynComp);
@@ -100,7 +102,7 @@ public class ScalingGraphGenerator {
             }
         }
 
-        // === Combine all series into the dataset ===
+        // === Combine all series into dataset ===
         XYSeriesCollection dataset = new XYSeriesCollection();
         dataset.addSeries(dynActual);
         dataset.addSeries(bfActual);
@@ -111,36 +113,41 @@ public class ScalingGraphGenerator {
 
         // === Build the chart ===
         JFreeChart chart = ChartFactory.createXYLineChart(
-                "LCS Comparison Count vs Sequence Length",
+                "LCS Comparison Count vs Sequence Length (L)",
                 "Sequence Length (L)",
-                "Character Comparisons",
+                "Total Character Comparisons",
                 dataset,
                 PlotOrientation.VERTICAL,
                 true, true, false
         );
 
-        // === Customize plot rendering ===
+        // Add chart subtitle
+        chart.addSubtitle(new TextTitle("Observed vs Theoretical Scaling of LCS Algorithms"));
+
+        // === Customize chart aesthetics ===
         XYPlot plot = chart.getXYPlot();
         XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
 
-        renderer.setSeriesPaint(0, Color.BLUE);     // Actual DP
-        renderer.setSeriesPaint(1, Color.RED);      // Actual BF
-        renderer.setSeriesPaint(2, Color.GREEN);    // Expected O(n²)
-        renderer.setSeriesPaint(3, Color.ORANGE);   // Expected O(2ⁿ)
-        renderer.setSeriesPaint(4, Color.CYAN);     // Fitted n²
-        renderer.setSeriesPaint(5, Color.MAGENTA);  // Fitted 2ⁿ
-
+        // Assign consistent, colorblind-friendly colors
+        renderer.setSeriesPaint(0, new Color(0x1f78b4)); // blue Actual: Dynamic
+        renderer.setSeriesPaint(1, new Color(0xe31a1c)); // red Actual: Brute Force
+        renderer.setSeriesPaint(2, new Color(0x33a02c)); // green Expected: O(n²)
+        renderer.setSeriesPaint(3, new Color(0xff7f00)); // orange Expected: O(2^L)
+        renderer.setSeriesPaint(4, new Color(0x6a3d9a)); // purple Fitted: c·L²
+        renderer.setSeriesPaint(5, new Color(0xb15928)); // brown Fitted: c·2^L
+        // Enable both lines and data points
         for (int i = 0; i < dataset.getSeriesCount(); i++) {
-            renderer.setSeriesShapesVisible(i, true);
             renderer.setSeriesLinesVisible(i, true);
+            renderer.setSeriesShapesVisible(i, true);
         }
 
+        // Apply renderer and theme
         plot.setRenderer(renderer);
         plot.setBackgroundPaint(Color.WHITE);
-        plot.setDomainGridlinePaint(Color.LIGHT_GRAY);
-        plot.setRangeGridlinePaint(Color.LIGHT_GRAY);
+        plot.setDomainGridlinePaint(Color.GRAY);
+        plot.setRangeGridlinePaint(Color.GRAY);
 
-        // === Annotate points ===
+        // === Annotate data points ===
         for (LCSResult dyn : dynamicResults) {
             String label = dyn.getComparisonLabel();
             LCSResult bf = bruteMap.get(label);
@@ -148,8 +155,8 @@ public class ScalingGraphGenerator {
 
             long dynComp = dyn.getMetrics().getComparisonCount();
             XYTextAnnotation dynNote = new XYTextAnnotation("Dyn: " + dynComp, L, dynComp);
-            dynNote.setPaint(Color.BLUE);
-            dynNote.setFont(new Font("SansSerif", Font.PLAIN, 10));
+            dynNote.setPaint(new Color(0x1f78b4));
+            dynNote.setFont(new Font("SansSerif", Font.PLAIN, 9));
             dynNote.setTextAnchor(TextAnchor.BOTTOM_RIGHT);
             plot.addAnnotation(dynNote);
 
@@ -157,16 +164,16 @@ public class ScalingGraphGenerator {
             if (bf != null) {
                 long bfComp = bf.getMetrics().getComparisonCount();
                 XYTextAnnotation bfNote = new XYTextAnnotation("BF: " + bfComp, L, bfComp);
-                bfNote.setPaint(Color.RED);
-                bfNote.setFont(new Font("SansSerif", Font.PLAIN, 10));
+                bfNote.setPaint(new Color(0xe31a1c));
+                bfNote.setFont(new Font("SansSerif", Font.PLAIN, 9));
                 bfNote.setTextAnchor(TextAnchor.BOTTOM_LEFT);
                 plot.addAnnotation(bfNote);
             }
         }
 
-        // === Save as PNG ===
+        // === Export as high-resolution PNG ===
         try {
-            ChartUtils.saveChartAsPNG(new File(outputPath), chart, 1000, 650);
+            ChartUtils.saveChartAsPNG(new File(outputPath), chart, 1200, 800);
             System.out.println("Graph saved to: " + outputPath);
         } catch (IOException e) {
             System.err.println("Error saving graph: " + e.getMessage());

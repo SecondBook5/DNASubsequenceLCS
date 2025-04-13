@@ -1,6 +1,6 @@
 package jhu.edu.algos;
 
-import jhu.edu.algos.benchmark.ScalingBenchmark;
+import jhu.edu.algos.benchmark.LScalingBenchmark;
 
 /**
  * Main.java serves as the command-line entry point and dispatcher for
@@ -66,7 +66,7 @@ public class Main {
                     String pngFile = txtFile.replaceAll("\\.txt$", "_plot.png");
 
                     // Dispatch to benchmark module
-                    ScalingBenchmark.run(txtFile, pngFile, plot);
+                    LScalingBenchmark.run(txtFile, pngFile, plot);
                     break;
 
                 default:
