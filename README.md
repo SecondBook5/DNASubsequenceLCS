@@ -648,8 +648,6 @@ The project can be executed either:
 - Using `mvn exec:java` for immediate IDE-integration
 - Or via `run_all.sh` for full pipeline automation
 
-No GUI is required, and all I/O is file-based to support grading, scripting, or HPC deployment.
-
 ---
 
 ---
