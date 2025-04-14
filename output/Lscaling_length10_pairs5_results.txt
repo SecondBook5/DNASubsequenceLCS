@@ -1,0 +1,1704 @@
+======================================================================
+Number of sequences to be compared: 10
+Sequence #1 | Length: 10
+GACTCGGATC
+Sequence #2 | Length: 13
+CCCGCTTTTACCG
+Sequence #3 | Length: 11
+TAAGCACTCAA
+Sequence #4 | Length: 10
+GCTGGAGATT
+Sequence #5 | Length: 17
+CATACTTAGGCTCATGT
+Sequence #6 | Length: 13
+AGCCACCCGCGCT
+Sequence #7 | Length: 10
+TAAATTCTCG
+Sequence #8 | Length: 14
+ACATTCCGCAGTGG
+Sequence #9 | Length: 19
+GCCCTATCGCCAGATCAAT
+Sequence #10 | Length: 16
+CGTCGCTGTGGAACTA
+======================================================================
+
+Comparing sequences S1 vs S2
+Longest common subsequence | Length: 5
+CCGTC
+
+Printing out subsequence matrix...
+	  C C C G C T T T T A C C G
+0 0 0 0 0 0 0 0 0 0 0 0 0 0
+G 0 0 0 0 1 1 1 1 1 1 1 1 1 1
+A 0 0 0 0 1 1 1 1 1 1 2 2 2 2
+C 0 1 1 1 1 2 2 2 2 2 2 3 3 3
+T 0 1 1 1 1 2 3 3 3 3 3 3 3 3
+C 0 1 2 2 2 2 3 3 3 3 3 4 4 4
+G 0 1 2 2 3 3 3 3 3 3 3 4 4 5
+G 0 1 2 2 3 3 3 3 3 3 3 4 4 5
+A 0 1 2 2 3 3 3 3 3 3 4 4 4 5
+T 0 1 2 2 3 3 4 4 4 4 4 4 4 5
+C 0 1 2 3 3 4 4 4 4 4 4 5 5 5
+
+-- Dynamic Programming LCS --
+LCS        : CCGTC
+Length     : 5
+Comparisons: 8,697
+Time (ms)  : 0.0000e+00
+Space (MB) : 1.2970e-03
+
+-- Brute Force LCS --
+LCS        : GACCG
+Length     : 5
+Comparisons: 1,759,127
+Time (ms)  : 1.0000e+00
+Space (MB) : 4.0001e+00
+
+======================================================================
+
+Comparing sequences S1 vs S3
+Longest common subsequence | Length: 6
+GACTCA
+
+Printing out subsequence matrix...
+	  T A A G C A C T C A A
+0 0 0 0 0 0 0 0 0 0 0 0
+G 0 0 0 0 1 1 1 1 1 1 1 1
+A 0 0 1 1 1 1 2 2 2 2 2 2
+C 0 0 1 1 1 2 2 3 3 3 3 3
+T 0 1 1 1 1 2 2 3 4 4 4 4
+C 0 1 1 1 1 2 2 3 4 5 5 5
+G 0 1 1 1 2 2 2 3 4 5 5 5
+G 0 1 1 1 2 2 2 3 4 5 5 5
+A 0 1 2 2 2 2 3 3 4 5 6 6
+T 0 1 2 2 2 2 3 3 4 5 6 6
+C 0 1 2 2 2 3 3 4 4 5 6 6
+
+-- Dynamic Programming LCS --
+LCS        : GACTCA
+Length     : 6
+Comparisons: 8,697
+Time (ms)  : 0.0000e+00
+Space (MB) : 1.2970e-03
+
+-- Brute Force LCS --
+LCS        : GACTCA
+Length     : 6
+Comparisons: 1,759,127
+Time (ms)  : 1.0000e+00
+Space (MB) : 4.0001e+00
+
+======================================================================
+
+Comparing sequences S1 vs S4
+Longest common subsequence | Length: 7
+GCTGGAT
+
+Printing out subsequence matrix...
+	  G C T G G A G A T T
+0 0 0 0 0 0 0 0 0 0 0
+G 0 1 1 1 1 1 1 1 1 1 1
+A 0 1 1 1 1 1 2 2 2 2 2
+C 0 1 2 2 2 2 2 2 2 2 2
+T 0 1 2 3 3 3 3 3 3 3 3
+C 0 1 2 3 3 3 3 3 3 3 3
+G 0 1 2 3 4 4 4 4 4 4 4
+G 0 1 2 3 4 5 5 5 5 5 5
+A 0 1 2 3 4 5 6 6 6 6 6
+T 0 1 2 3 4 5 6 6 6 7 7
+C 0 1 2 3 4 5 6 6 6 7 7
+
+-- Dynamic Programming LCS --
+LCS        : GCTGGAT
+Length     : 7
+Comparisons: 8,697
+Time (ms)  : 0.0000e+00
+Space (MB) : 1.2970e-03
+
+-- Brute Force LCS --
+LCS        : GCTGGAT
+Length     : 7
+Comparisons: 1,759,127
+Time (ms)  : 1.0000e+00
+Space (MB) : 4.0001e+00
+
+======================================================================
+
+Comparing sequences S1 vs S5
+Longest common subsequence | Length: 7
+CTCGGTC
+
+Printing out subsequence matrix...
+	  C A T A C T T A G G C T C A T G T
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+G 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 1 1
+A 0 0 1 1 1 1 1 1 1 1 1 1 1 1 2 2 2 2
+C 0 1 1 1 1 2 2 2 2 2 2 2 2 2 2 2 2 2
+T 0 1 1 2 2 2 3 3 3 3 3 3 3 3 3 3 3 3
+C 0 1 1 2 2 3 3 3 3 3 3 4 4 4 4 4 4 4
+G 0 1 1 2 2 3 3 3 3 4 4 4 4 4 4 4 5 5
+G 0 1 1 2 2 3 3 3 3 4 5 5 5 5 5 5 5 5
+A 0 1 2 2 3 3 3 3 4 4 5 5 5 5 6 6 6 6
+T 0 1 2 3 3 3 4 4 4 4 5 5 6 6 6 7 7 7
+C 0 1 2 3 3 4 4 4 4 4 5 6 6 7 7 7 7 7
+
+-- Dynamic Programming LCS --
+LCS        : CTCGGTC
+Length     : 7
+Comparisons: 8,697
+Time (ms)  : 0.0000e+00
+Space (MB) : 1.2970e-03
+
+-- Brute Force LCS --
+LCS        : ACTGGAT
+Length     : 7
+Comparisons: 1,759,127
+Time (ms)  : 1.0000e+00
+Space (MB) : 4.0001e+00
+
+======================================================================
+
+Comparing sequences S1 vs S6
+Longest common subsequence | Length: 7
+GACCGGC
+
+Printing out subsequence matrix...
+	  A G C C A C C C G C G C T
+0 0 0 0 0 0 0 0 0 0 0 0 0 0
+G 0 0 1 1 1 1 1 1 1 1 1 1 1 1
+A 0 1 1 1 1 2 2 2 2 2 2 2 2 2
+C 0 1 1 2 2 2 3 3 3 3 3 3 3 3
+T 0 1 1 2 2 2 3 3 3 3 3 3 3 4
+C 0 1 1 2 3 3 3 4 4 4 4 4 4 4
+G 0 1 2 2 3 3 3 4 4 5 5 5 5 5
+G 0 1 2 2 3 3 3 4 4 5 5 6 6 6
+A 0 1 2 2 3 4 4 4 4 5 5 6 6 6
+T 0 1 2 2 3 4 4 4 4 5 5 6 6 7
+C 0 1 2 3 3 4 5 5 5 5 6 6 7 7
+
+-- Dynamic Programming LCS --
+LCS        : GACCGGC
+Length     : 7
+Comparisons: 8,697
+Time (ms)  : 0.0000e+00
+Space (MB) : 1.2970e-03
+
+-- Brute Force LCS --
+LCS        : GACCGGT
+Length     : 7
+Comparisons: 1,759,127
+Time (ms)  : 1.0000e+00
+Space (MB) : 4.0001e+00
+
+======================================================================
+
+Comparing sequences S1 vs S7
+Longest common subsequence | Length: 5
+ATCTC
+
+Printing out subsequence matrix...
+	  T A A A T T C T C G
+0 0 0 0 0 0 0 0 0 0 0
+G 0 0 0 0 0 0 0 0 0 0 1
+A 0 0 1 1 1 1 1 1 1 1 1
+C 0 0 1 1 1 1 1 2 2 2 2
+T 0 1 1 1 1 2 2 2 3 3 3
+C 0 1 1 1 1 2 2 3 3 4 4
+G 0 1 1 1 1 2 2 3 3 4 5
+G 0 1 1 1 1 2 2 3 3 4 5
+A 0 1 2 2 2 2 2 3 3 4 5
+T 0 1 2 2 2 3 3 3 4 4 5
+C 0 1 2 2 2 3 3 4 4 5 5
+
+-- Dynamic Programming LCS --
+LCS        : ATCTC
+Length     : 5
+Comparisons: 8,697
+Time (ms)  : 0.0000e+00
+Space (MB) : 1.2970e-03
+
+-- Brute Force LCS --
+LCS        : ACTCG
+Length     : 5
+Comparisons: 1,759,127
+Time (ms)  : 1.0000e+00
+Space (MB) : 4.0001e+00
+
+======================================================================
+
+Comparing sequences S1 vs S8
+Longest common subsequence | Length: 7
+ACTCGAT
+
+Printing out subsequence matrix...
+	  A C A T T C C G C A G T G G
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+G 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1
+A 0 1 1 1 1 1 1 1 1 1 2 2 2 2 2
+C 0 1 2 2 2 2 2 2 2 2 2 2 2 2 2
+T 0 1 2 2 3 3 3 3 3 3 3 3 3 3 3
+C 0 1 2 2 3 3 4 4 4 4 4 4 4 4 4
+G 0 1 2 2 3 3 4 4 5 5 5 5 5 5 5
+G 0 1 2 2 3 3 4 4 5 5 5 6 6 6 6
+A 0 1 2 3 3 3 4 4 5 5 6 6 6 6 6
+T 0 1 2 3 4 4 4 4 5 5 6 6 7 7 7
+C 0 1 2 3 4 4 5 5 5 6 6 6 7 7 7
+
+-- Dynamic Programming LCS --
+LCS        : ACTCGAT
+Length     : 7
+Comparisons: 8,697
+Time (ms)  : 0.0000e+00
+Space (MB) : 1.2970e-03
+
+-- Brute Force LCS --
+LCS        : ACTCGGT
+Length     : 7
+Comparisons: 1,759,127
+Time (ms)  : 1.0000e+00
+Space (MB) : 4.0001e+00
+
+======================================================================
+
+Comparing sequences S1 vs S9
+Longest common subsequence | Length: 9
+GCTCGGATC
+
+Printing out subsequence matrix...
+	  G C C C T A T C G C C A G A T C A A T
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+G 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+A 0 1 1 1 1 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+C 0 1 2 2 2 2 2 2 3 3 3 3 3 3 3 3 3 3 3 3
+T 0 1 2 2 2 3 3 3 3 3 3 3 3 3 3 4 4 4 4 4
+C 0 1 2 3 3 3 3 3 4 4 4 4 4 4 4 4 5 5 5 5
+G 0 1 2 3 3 3 3 3 4 5 5 5 5 5 5 5 5 5 5 5
+G 0 1 2 3 3 3 3 3 4 5 5 5 5 6 6 6 6 6 6 6
+A 0 1 2 3 3 3 4 4 4 5 5 5 6 6 7 7 7 7 7 7
+T 0 1 2 3 3 4 4 5 5 5 5 5 6 6 7 8 8 8 8 8
+C 0 1 2 3 4 4 4 5 6 6 6 6 6 6 7 8 9 9 9 9
+
+-- Dynamic Programming LCS --
+LCS        : GCTCGGATC
+Length     : 9
+Comparisons: 8,697
+Time (ms)  : 0.0000e+00
+Space (MB) : 1.2970e-03
+
+-- Brute Force LCS --
+LCS        : GATCGGATC
+Length     : 9
+Comparisons: 1,759,127
+Time (ms)  : 1.0000e+00
+Space (MB) : 4.0001e+00
+
+======================================================================
+
+Comparing sequences S1 vs S10
+Longest common subsequence | Length: 7
+CTCGGTC
+
+Printing out subsequence matrix...
+	  C G T C G C T G T G G A A C T A
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+G 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+A 0 0 1 1 1 1 1 1 1 1 1 1 2 2 2 2 2
+C 0 1 1 1 2 2 2 2 2 2 2 2 2 2 3 3 3
+T 0 1 1 2 2 2 2 3 3 3 3 3 3 3 3 4 4
+C 0 1 1 2 3 3 3 3 3 3 3 3 3 3 4 4 4
+G 0 1 2 2 3 4 4 4 4 4 4 4 4 4 4 4 4
+G 0 1 2 2 3 4 4 4 5 5 5 5 5 5 5 5 5
+A 0 1 2 2 3 4 4 4 5 5 5 5 6 6 6 6 6
+T 0 1 2 3 3 4 4 5 5 6 6 6 6 6 6 7 7
+C 0 1 2 3 4 4 5 5 5 6 6 6 6 6 7 7 7
+
+-- Dynamic Programming LCS --
+LCS        : CTCGGTC
+Length     : 7
+Comparisons: 8,697
+Time (ms)  : 0.0000e+00
+Space (MB) : 1.2970e-03
+
+-- Brute Force LCS --
+LCS        : GCTGGAT
+Length     : 7
+Comparisons: 1,759,127
+Time (ms)  : 1.0000e+00
+Space (MB) : 4.0001e+00
+
+======================================================================
+
+Comparing sequences S2 vs S3
+Longest common subsequence | Length: 5
+GCACC
+
+Printing out subsequence matrix...
+	  T A A G C A C T C A A
+0 0 0 0 0 0 0 0 0 0 0 0
+C 0 0 0 0 0 1 1 1 1 1 1 1
+C 0 0 0 0 0 1 1 2 2 2 2 2
+C 0 0 0 0 0 1 1 2 2 3 3 3
+G 0 0 0 0 1 1 1 2 2 3 3 3
+C 0 0 0 0 1 2 2 2 2 3 3 3
+T 0 1 1 1 1 2 2 2 3 3 3 3
+T 0 1 1 1 1 2 2 2 3 3 3 3
+T 0 1 1 1 1 2 2 2 3 3 3 3
+T 0 1 1 1 1 2 2 2 3 3 3 3
+A 0 1 2 2 2 2 3 3 3 3 4 4
+C 0 1 2 2 2 3 3 4 4 4 4 4
+C 0 1 2 2 2 3 3 4 4 5 5 5
+G 0 1 2 2 3 3 3 4 4 5 5 5
+
+-- Dynamic Programming LCS --
+LCS        : GCACC
+Length     : 5
+Comparisons: 8,697
+Time (ms)  : 0.0000e+00
+Space (MB) : 1.2970e-03
+
+-- Brute Force LCS --
+LCS        : GCACC
+Length     : 5
+Comparisons: 1,759,127
+Time (ms)  : 1.0000e+00
+Space (MB) : 4.0001e+00
+
+======================================================================
+
+Comparing sequences S2 vs S4
+Longest common subsequence | Length: 5
+GCTAG
+
+Printing out subsequence matrix...
+	  G C T G G A G A T T
+0 0 0 0 0 0 0 0 0 0 0
+C 0 0 1 1 1 1 1 1 1 1 1
+C 0 0 1 1 1 1 1 1 1 1 1
+C 0 0 1 1 1 1 1 1 1 1 1
+G 0 1 1 1 2 2 2 2 2 2 2
+C 0 1 2 2 2 2 2 2 2 2 2
+T 0 1 2 3 3 3 3 3 3 3 3
+T 0 1 2 3 3 3 3 3 3 4 4
+T 0 1 2 3 3 3 3 3 3 4 5
+T 0 1 2 3 3 3 3 3 3 4 5
+A 0 1 2 3 3 3 4 4 4 4 5
+C 0 1 2 3 3 3 4 4 4 4 5
+C 0 1 2 3 3 3 4 4 4 4 5
+G 0 1 2 3 4 4 4 5 5 5 5
+
+-- Dynamic Programming LCS --
+LCS        : GCTAG
+Length     : 5
+Comparisons: 8,697
+Time (ms)  : 0.0000e+00
+Space (MB) : 1.2970e-03
+
+-- Brute Force LCS --
+LCS        : GCTAG
+Length     : 5
+Comparisons: 1,759,127
+Time (ms)  : 1.0000e+00
+Space (MB) : 4.0001e+00
+
+======================================================================
+
+Comparing sequences S2 vs S5
+Longest common subsequence | Length: 8
+CTTTACCG
+
+Printing out subsequence matrix...
+	  C A T A C T T A G G C T C A T G T
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+C 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+C 0 1 1 1 1 2 2 2 2 2 2 2 2 2 2 2 2 2
+C 0 1 1 1 1 2 2 2 2 2 2 3 3 3 3 3 3 3
+G 0 1 1 1 1 2 2 2 2 3 3 3 3 3 3 3 4 4
+C 0 1 1 1 1 2 2 2 2 3 3 4 4 4 4 4 4 4
+T 0 1 1 2 2 2 3 3 3 3 3 4 5 5 5 5 5 5
+T 0 1 1 2 2 2 3 4 4 4 4 4 5 5 5 6 6 6
+T 0 1 1 2 2 2 3 4 4 4 4 4 5 5 5 6 6 7
+T 0 1 1 2 2 2 3 4 4 4 4 4 5 5 5 6 6 7
+A 0 1 2 2 3 3 3 4 5 5 5 5 5 5 6 6 6 7
+C 0 1 2 2 3 4 4 4 5 5 5 6 6 6 6 6 6 7
+C 0 1 2 2 3 4 4 4 5 5 5 6 6 7 7 7 7 7
+G 0 1 2 2 3 4 4 4 5 6 6 6 6 7 7 7 8 8
+
+-- Dynamic Programming LCS --
+LCS        : CTTTACCG
+Length     : 8
+Comparisons: 8,697
+Time (ms)  : 0.0000e+00
+Space (MB) : 1.2970e-03
+
+-- Brute Force LCS --
+LCS        : CCTTACCG
+Length     : 8
+Comparisons: 1,759,127
+Time (ms)  : 1.0000e+00
+Space (MB) : 4.0001e+00
+
+======================================================================
+
+Comparing sequences S2 vs S6
+Longest common subsequence | Length: 7
+CCCCCCG
+
+Printing out subsequence matrix...
+	  A G C C A C C C G C G C T
+0 0 0 0 0 0 0 0 0 0 0 0 0 0
+C 0 0 0 1 1 1 1 1 1 1 1 1 1 1
+C 0 0 0 1 2 2 2 2 2 2 2 2 2 2
+C 0 0 0 1 2 2 3 3 3 3 3 3 3 3
+G 0 0 1 1 2 2 3 3 3 4 4 4 4 4
+C 0 0 1 2 2 2 3 4 4 4 5 5 5 5
+T 0 0 1 2 2 2 3 4 4 4 5 5 5 6
+T 0 0 1 2 2 2 3 4 4 4 5 5 5 6
+T 0 0 1 2 2 2 3 4 4 4 5 5 5 6
+T 0 0 1 2 2 2 3 4 4 4 5 5 5 6
+A 0 1 1 2 2 3 3 4 4 4 5 5 5 6
+C 0 1 1 2 3 3 4 4 5 5 5 5 6 6
+C 0 1 1 2 3 3 4 5 5 5 6 6 6 6
+G 0 1 2 2 3 3 4 5 5 6 6 7 7 7
+
+-- Dynamic Programming LCS --
+LCS        : CCCCCCG
+Length     : 7
+Comparisons: 8,697
+Time (ms)  : 0.0000e+00
+Space (MB) : 1.2970e-03
+
+-- Brute Force LCS --
+LCS        : CCCCCCG
+Length     : 7
+Comparisons: 1,759,127
+Time (ms)  : 1.0000e+00
+Space (MB) : 4.0001e+00
+
+======================================================================
+
+Comparing sequences S2 vs S7
+Longest common subsequence | Length: 6
+TTTCCG
+
+Printing out subsequence matrix...
+	  T A A A T T C T C G
+0 0 0 0 0 0 0 0 0 0 0
+C 0 0 0 0 0 0 0 1 1 1 1
+C 0 0 0 0 0 0 0 1 1 2 2
+C 0 0 0 0 0 0 0 1 1 2 2
+G 0 0 0 0 0 0 0 1 1 2 3
+C 0 0 0 0 0 0 0 1 1 2 3
+T 0 1 1 1 1 1 1 1 2 2 3
+T 0 1 1 1 1 2 2 2 2 2 3
+T 0 1 1 1 1 2 3 3 3 3 3
+T 0 1 1 1 1 2 3 3 4 4 4
+A 0 1 2 2 2 2 3 3 4 4 4
+C 0 1 2 2 2 2 3 4 4 5 5
+C 0 1 2 2 2 2 3 4 4 5 5
+G 0 1 2 2 2 2 3 4 4 5 6
+
+-- Dynamic Programming LCS --
+LCS        : TTTCCG
+Length     : 6
+Comparisons: 8,697
+Time (ms)  : 0.0000e+00
+Space (MB) : 1.2970e-03
+
+-- Brute Force LCS --
+LCS        : TTTCCG
+Length     : 6
+Comparisons: 1,759,127
+Time (ms)  : 1.0000e+00
+Space (MB) : 4.0001e+00
+
+======================================================================
+
+Comparing sequences S2 vs S8
+Longest common subsequence | Length: 7
+CCCGCAG
+
+Printing out subsequence matrix...
+	  A C A T T C C G C A G T G G
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+C 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1
+C 0 0 1 1 1 1 2 2 2 2 2 2 2 2 2
+C 0 0 1 1 1 1 2 3 3 3 3 3 3 3 3
+G 0 0 1 1 1 1 2 3 4 4 4 4 4 4 4
+C 0 0 1 1 1 1 2 3 4 5 5 5 5 5 5
+T 0 0 1 1 2 2 2 3 4 5 5 5 6 6 6
+T 0 0 1 1 2 3 3 3 4 5 5 5 6 6 6
+T 0 0 1 1 2 3 3 3 4 5 5 5 6 6 6
+T 0 0 1 1 2 3 3 3 4 5 5 5 6 6 6
+A 0 1 1 2 2 3 3 3 4 5 6 6 6 6 6
+C 0 1 2 2 2 3 4 4 4 5 6 6 6 6 6
+C 0 1 2 2 2 3 4 5 5 5 6 6 6 6 6
+G 0 1 2 2 2 3 4 5 6 6 6 7 7 7 7
+
+-- Dynamic Programming LCS --
+LCS        : CCCGCAG
+Length     : 7
+Comparisons: 8,697
+Time (ms)  : 0.0000e+00
+Space (MB) : 1.2970e-03
+
+-- Brute Force LCS --
+LCS        : CCCGCTG
+Length     : 7
+Comparisons: 1,759,127
+Time (ms)  : 1.0000e+00
+Space (MB) : 4.0001e+00
+
+======================================================================
+
+Comparing sequences S2 vs S9
+Longest common subsequence | Length: 8
+CCCTACCG
+
+Printing out subsequence matrix...
+	  G C C C T A T C G C C A G A T C A A T
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+C 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+C 0 0 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+C 0 0 1 2 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3
+G 0 1 1 2 3 3 3 3 3 4 4 4 4 4 4 4 4 4 4 4
+C 0 1 2 2 3 3 3 3 4 4 5 5 5 5 5 5 5 5 5 5
+T 0 1 2 2 3 4 4 4 4 4 5 5 5 5 5 6 6 6 6 6
+T 0 1 2 2 3 4 4 5 5 5 5 5 5 5 5 6 6 6 6 7
+T 0 1 2 2 3 4 4 5 5 5 5 5 5 5 5 6 6 6 6 7
+T 0 1 2 2 3 4 4 5 5 5 5 5 5 5 5 6 6 6 6 7
+A 0 1 2 2 3 4 5 5 5 5 5 5 6 6 6 6 6 7 7 7
+C 0 1 2 3 3 4 5 5 6 6 6 6 6 6 6 6 7 7 7 7
+C 0 1 2 3 4 4 5 5 6 6 7 7 7 7 7 7 7 7 7 7
+G 0 1 2 3 4 4 5 5 6 7 7 7 7 8 8 8 8 8 8 8
+
+-- Dynamic Programming LCS --
+LCS        : CCCTACCG
+Length     : 8
+Comparisons: 8,697
+Time (ms)  : 0.0000e+00
+Space (MB) : 1.2970e-03
+
+-- Brute Force LCS --
+LCS        : CCCTTCCG
+Length     : 8
+Comparisons: 1,759,127
+Time (ms)  : 1.0000e+00
+Space (MB) : 4.0001e+00
+
+======================================================================
+
+Comparing sequences S2 vs S10
+Longest common subsequence | Length: 8
+CCGCTTAC
+
+Printing out subsequence matrix...
+	  C G T C G C T G T G G A A C T A
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+C 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+C 0 1 1 1 2 2 2 2 2 2 2 2 2 2 2 2 2
+C 0 1 1 1 2 2 3 3 3 3 3 3 3 3 3 3 3
+G 0 1 2 2 2 3 3 3 4 4 4 4 4 4 4 4 4
+C 0 1 2 2 3 3 4 4 4 4 4 4 4 4 5 5 5
+T 0 1 2 3 3 3 4 5 5 5 5 5 5 5 5 6 6
+T 0 1 2 3 3 3 4 5 5 6 6 6 6 6 6 6 6
+T 0 1 2 3 3 3 4 5 5 6 6 6 6 6 6 7 7
+T 0 1 2 3 3 3 4 5 5 6 6 6 6 6 6 7 7
+A 0 1 2 3 3 3 4 5 5 6 6 6 7 7 7 7 8
+C 0 1 2 3 4 4 4 5 5 6 6 6 7 7 8 8 8
+C 0 1 2 3 4 4 5 5 5 6 6 6 7 7 8 8 8
+G 0 1 2 3 4 5 5 5 6 6 7 7 7 7 8 8 8
+
+-- Dynamic Programming LCS --
+LCS        : CCGCTTAC
+Length     : 8
+Comparisons: 8,697
+Time (ms)  : 0.0000e+00
+Space (MB) : 1.2970e-03
+
+-- Brute Force LCS --
+LCS        : CCGCTTTA
+Length     : 8
+Comparisons: 1,759,127
+Time (ms)  : 1.0000e+00
+Space (MB) : 4.0001e+00
+
+======================================================================
+
+Comparing sequences S3 vs S4
+Longest common subsequence | Length: 5
+GCTAA
+
+Printing out subsequence matrix...
+	  G C T G G A G A T T
+0 0 0 0 0 0 0 0 0 0 0
+T 0 0 0 1 1 1 1 1 1 1 1
+A 0 0 0 1 1 1 2 2 2 2 2
+A 0 0 0 1 1 1 2 2 3 3 3
+G 0 1 1 1 2 2 2 3 3 3 3
+C 0 1 2 2 2 2 2 3 3 3 3
+A 0 1 2 2 2 2 3 3 4 4 4
+C 0 1 2 2 2 2 3 3 4 4 4
+T 0 1 2 3 3 3 3 3 4 5 5
+C 0 1 2 3 3 3 3 3 4 5 5
+A 0 1 2 3 3 3 4 4 4 5 5
+A 0 1 2 3 3 3 4 4 5 5 5
+
+-- Dynamic Programming LCS --
+LCS        : GCTAA
+Length     : 5
+Comparisons: 8,697
+Time (ms)  : 0.0000e+00
+Space (MB) : 1.2970e-03
+
+-- Brute Force LCS --
+LCS        : GCTAA
+Length     : 5
+Comparisons: 1,759,127
+Time (ms)  : 1.0000e+00
+Space (MB) : 4.0001e+00
+
+======================================================================
+
+Comparing sequences S3 vs S5
+Longest common subsequence | Length: 8
+AACACTCA
+
+Printing out subsequence matrix...
+	  C A T A C T T A G G C T C A T G T
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+T 0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+A 0 0 1 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+A 0 0 1 1 2 2 2 2 3 3 3 3 3 3 3 3 3 3
+G 0 0 1 1 2 2 2 2 3 4 4 4 4 4 4 4 4 4
+C 0 1 1 1 2 3 3 3 3 4 4 5 5 5 5 5 5 5
+A 0 1 2 2 2 3 3 3 4 4 4 5 5 5 6 6 6 6
+C 0 1 2 2 2 3 3 3 4 4 4 5 5 6 6 6 6 6
+T 0 1 2 3 3 3 4 4 4 4 4 5 6 6 6 7 7 7
+C 0 1 2 3 3 4 4 4 4 4 4 5 6 7 7 7 7 7
+A 0 1 2 3 4 4 4 4 5 5 5 5 6 7 8 8 8 8
+A 0 1 2 3 4 4 4 4 5 5 5 5 6 7 8 8 8 8
+
+-- Dynamic Programming LCS --
+LCS        : AACACTCA
+Length     : 8
+Comparisons: 8,697
+Time (ms)  : 0.0000e+00
+Space (MB) : 1.2970e-03
+
+-- Brute Force LCS --
+LCS        : TAAGCTCA
+Length     : 8
+Comparisons: 1,759,127
+Time (ms)  : 1.0000e+00
+Space (MB) : 4.0001e+00
+
+======================================================================
+
+Comparing sequences S3 vs S6
+Longest common subsequence | Length: 6
+AGCACC
+
+Printing out subsequence matrix...
+	  A G C C A C C C G C G C T
+0 0 0 0 0 0 0 0 0 0 0 0 0 0
+T 0 0 0 0 0 0 0 0 0 0 0 0 0 1
+A 0 1 1 1 1 1 1 1 1 1 1 1 1 1
+A 0 1 1 1 1 2 2 2 2 2 2 2 2 2
+G 0 1 2 2 2 2 2 2 2 3 3 3 3 3
+C 0 1 2 3 3 3 3 3 3 3 4 4 4 4
+A 0 1 2 3 3 4 4 4 4 4 4 4 4 4
+C 0 1 2 3 4 4 5 5 5 5 5 5 5 5
+T 0 1 2 3 4 4 5 5 5 5 5 5 5 6
+C 0 1 2 3 4 4 5 6 6 6 6 6 6 6
+A 0 1 2 3 4 5 5 6 6 6 6 6 6 6
+A 0 1 2 3 4 5 5 6 6 6 6 6 6 6
+
+-- Dynamic Programming LCS --
+LCS        : AGCACC
+Length     : 6
+Comparisons: 8,697
+Time (ms)  : 0.0000e+00
+Space (MB) : 1.2970e-03
+
+-- Brute Force LCS --
+LCS        : AAGCCT
+Length     : 6
+Comparisons: 1,759,127
+Time (ms)  : 1.0000e+00
+Space (MB) : 4.0001e+00
+
+======================================================================
+
+Comparing sequences S3 vs S7
+Longest common subsequence | Length: 7
+TAAACTC
+
+Printing out subsequence matrix...
+	  T A A A T T C T C G
+0 0 0 0 0 0 0 0 0 0 0
+T 0 1 1 1 1 1 1 1 1 1 1
+A 0 1 2 2 2 2 2 2 2 2 2
+A 0 1 2 3 3 3 3 3 3 3 3
+G 0 1 2 3 3 3 3 3 3 3 4
+C 0 1 2 3 3 3 3 4 4 4 4
+A 0 1 2 3 4 4 4 4 4 4 4
+C 0 1 2 3 4 4 4 5 5 5 5
+T 0 1 2 3 4 5 5 5 6 6 6
+C 0 1 2 3 4 5 5 6 6 7 7
+A 0 1 2 3 4 5 5 6 6 7 7
+A 0 1 2 3 4 5 5 6 6 7 7
+
+-- Dynamic Programming LCS --
+LCS        : TAAACTC
+Length     : 7
+Comparisons: 8,697
+Time (ms)  : 0.0000e+00
+Space (MB) : 1.2970e-03
+
+-- Brute Force LCS --
+LCS        : TAAACTC
+Length     : 7
+Comparisons: 1,759,127
+Time (ms)  : 1.0000e+00
+Space (MB) : 4.0001e+00
+
+======================================================================
+
+Comparing sequences S3 vs S8
+Longest common subsequence | Length: 6
+ACATCA
+
+Printing out subsequence matrix...
+	  A C A T T C C G C A G T G G
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+T 0 0 0 0 1 1 1 1 1 1 1 1 1 1 1
+A 0 1 1 1 1 1 1 1 1 1 2 2 2 2 2
+A 0 1 1 2 2 2 2 2 2 2 2 2 2 2 2
+G 0 1 1 2 2 2 2 2 3 3 3 3 3 3 3
+C 0 1 2 2 2 2 3 3 3 4 4 4 4 4 4
+A 0 1 2 3 3 3 3 3 3 4 5 5 5 5 5
+C 0 1 2 3 3 3 4 4 4 4 5 5 5 5 5
+T 0 1 2 3 4 4 4 4 4 4 5 5 6 6 6
+C 0 1 2 3 4 4 5 5 5 5 5 5 6 6 6
+A 0 1 2 3 4 4 5 5 5 5 6 6 6 6 6
+A 0 1 2 3 4 4 5 5 5 5 6 6 6 6 6
+
+-- Dynamic Programming LCS --
+LCS        : ACATCA
+Length     : 6
+Comparisons: 8,697
+Time (ms)  : 0.0000e+00
+Space (MB) : 1.2970e-03
+
+-- Brute Force LCS --
+LCS        : AAGCAT
+Length     : 6
+Comparisons: 1,759,127
+Time (ms)  : 1.0000e+00
+Space (MB) : 4.0001e+00
+
+======================================================================
+
+Comparing sequences S3 vs S9
+Longest common subsequence | Length: 9
+TAGCCTCAA
+
+Printing out subsequence matrix...
+	  G C C C T A T C G C C A G A T C A A T
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+T 0 0 0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+A 0 0 0 0 0 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+A 0 0 0 0 0 1 2 2 2 2 2 2 3 3 3 3 3 3 3 3
+G 0 1 1 1 1 1 2 2 2 3 3 3 3 4 4 4 4 4 4 4
+C 0 1 2 2 2 2 2 2 3 3 4 4 4 4 4 4 5 5 5 5
+A 0 1 2 2 2 2 3 3 3 3 4 4 5 5 5 5 5 6 6 6
+C 0 1 2 3 3 3 3 3 4 4 4 5 5 5 5 5 6 6 6 6
+T 0 1 2 3 3 4 4 4 4 4 4 5 5 5 5 6 6 6 6 7
+C 0 1 2 3 4 4 4 4 5 5 5 5 5 5 5 6 7 7 7 7
+A 0 1 2 3 4 4 5 5 5 5 5 5 6 6 6 6 7 8 8 8
+A 0 1 2 3 4 4 5 5 5 5 5 5 6 6 7 7 7 8 9 9
+
+-- Dynamic Programming LCS --
+LCS        : TAGCCTCAA
+Length     : 9
+Comparisons: 8,697
+Time (ms)  : 0.0000e+00
+Space (MB) : 1.2970e-03
+
+-- Brute Force LCS --
+LCS        : TAAGATCAA
+Length     : 9
+Comparisons: 1,759,127
+Time (ms)  : 1.0000e+00
+Space (MB) : 4.0001e+00
+
+======================================================================
+
+Comparing sequences S3 vs S10
+Longest common subsequence | Length: 7
+TGCACTA
+
+Printing out subsequence matrix...
+	  C G T C G C T G T G G A A C T A
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+T 0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+A 0 0 0 1 1 1 1 1 1 1 1 1 2 2 2 2 2
+A 0 0 0 1 1 1 1 1 1 1 1 1 2 3 3 3 3
+G 0 0 1 1 1 2 2 2 2 2 2 2 2 3 3 3 3
+C 0 1 1 1 2 2 3 3 3 3 3 3 3 3 4 4 4
+A 0 1 1 1 2 2 3 3 3 3 3 3 4 4 4 4 5
+C 0 1 1 1 2 2 3 3 3 3 3 3 4 4 5 5 5
+T 0 1 1 2 2 2 3 4 4 4 4 4 4 4 5 6 6
+C 0 1 1 2 3 3 3 4 4 4 4 4 4 4 5 6 6
+A 0 1 1 2 3 3 3 4 4 4 4 4 5 5 5 6 7
+A 0 1 1 2 3 3 3 4 4 4 4 4 5 6 6 6 7
+
+-- Dynamic Programming LCS --
+LCS        : TGCACTA
+Length     : 7
+Comparisons: 8,697
+Time (ms)  : 0.0000e+00
+Space (MB) : 1.2970e-03
+
+-- Brute Force LCS --
+LCS        : TGCACTA
+Length     : 7
+Comparisons: 1,759,127
+Time (ms)  : 1.0000e+00
+Space (MB) : 4.0001e+00
+
+======================================================================
+
+Comparing sequences S4 vs S5
+Longest common subsequence | Length: 7
+CTAGATT
+
+Printing out subsequence matrix...
+	  C A T A C T T A G G C T C A T G T
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+G 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 1 1
+C 0 1 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 2
+T 0 1 1 2 2 2 2 2 2 2 2 2 3 3 3 3 3 3
+G 0 1 1 2 2 2 2 2 2 3 3 3 3 3 3 3 4 4
+G 0 1 1 2 2 2 2 2 2 3 4 4 4 4 4 4 4 4
+A 0 1 2 2 3 3 3 3 3 3 4 4 4 4 5 5 5 5
+G 0 1 2 2 3 3 3 3 3 4 4 4 4 4 5 5 6 6
+A 0 1 2 2 3 3 3 3 4 4 4 4 4 4 5 5 6 6
+T 0 1 2 3 3 3 4 4 4 4 4 4 5 5 5 6 6 7
+T 0 1 2 3 3 3 4 5 5 5 5 5 5 5 5 6 6 7
+
+-- Dynamic Programming LCS --
+LCS        : CTAGATT
+Length     : 7
+Comparisons: 8,697
+Time (ms)  : 0.0000e+00
+Space (MB) : 1.2970e-03
+
+-- Brute Force LCS --
+LCS        : CTGGAGT
+Length     : 7
+Comparisons: 1,759,127
+Time (ms)  : 1.0000e+00
+Space (MB) : 4.0001e+00
+
+======================================================================
+
+Comparing sequences S4 vs S6
+Longest common subsequence | Length: 5
+GCAGT
+
+Printing out subsequence matrix...
+	  A G C C A C C C G C G C T
+0 0 0 0 0 0 0 0 0 0 0 0 0 0
+G 0 0 1 1 1 1 1 1 1 1 1 1 1 1
+C 0 0 1 2 2 2 2 2 2 2 2 2 2 2
+T 0 0 1 2 2 2 2 2 2 2 2 2 2 3
+G 0 0 1 2 2 2 2 2 2 3 3 3 3 3
+G 0 0 1 2 2 2 2 2 2 3 3 4 4 4
+A 0 1 1 2 2 3 3 3 3 3 3 4 4 4
+G 0 1 2 2 2 3 3 3 3 4 4 4 4 4
+A 0 1 2 2 2 3 3 3 3 4 4 4 4 4
+T 0 1 2 2 2 3 3 3 3 4 4 4 4 5
+T 0 1 2 2 2 3 3 3 3 4 4 4 4 5
+
+-- Dynamic Programming LCS --
+LCS        : GCAGT
+Length     : 5
+Comparisons: 8,697
+Time (ms)  : 0.0000e+00
+Space (MB) : 1.2970e-03
+
+-- Brute Force LCS --
+LCS        : GCGGT
+Length     : 5
+Comparisons: 1,759,127
+Time (ms)  : 1.0000e+00
+Space (MB) : 4.0001e+00
+
+======================================================================
+
+Comparing sequences S4 vs S7
+Longest common subsequence | Length: 5
+TAATT
+
+Printing out subsequence matrix...
+	  T A A A T T C T C G
+0 0 0 0 0 0 0 0 0 0 0
+G 0 0 0 0 0 0 0 0 0 0 1
+C 0 0 0 0 0 0 0 1 1 1 1
+T 0 1 1 1 1 1 1 1 2 2 2
+G 0 1 1 1 1 1 1 1 2 2 3
+G 0 1 1 1 1 1 1 1 2 2 3
+A 0 1 2 2 2 2 2 2 2 2 3
+G 0 1 2 2 2 2 2 2 2 2 3
+A 0 1 2 3 3 3 3 3 3 3 3
+T 0 1 2 3 3 4 4 4 4 4 4
+T 0 1 2 3 3 4 5 5 5 5 5
+
+-- Dynamic Programming LCS --
+LCS        : TAATT
+Length     : 5
+Comparisons: 8,697
+Time (ms)  : 0.0000e+00
+Space (MB) : 1.2970e-03
+
+-- Brute Force LCS --
+LCS        : TAATT
+Length     : 5
+Comparisons: 1,759,127
+Time (ms)  : 1.0000e+00
+Space (MB) : 4.0001e+00
+
+======================================================================
+
+Comparing sequences S4 vs S8
+Longest common subsequence | Length: 6
+CTGAGT
+
+Printing out subsequence matrix...
+	  A C A T T C C G C A G T G G
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+G 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1
+C 0 0 1 1 1 1 1 1 1 2 2 2 2 2 2
+T 0 0 1 1 2 2 2 2 2 2 2 2 3 3 3
+G 0 0 1 1 2 2 2 2 3 3 3 3 3 4 4
+G 0 0 1 1 2 2 2 2 3 3 3 4 4 4 5
+A 0 1 1 2 2 2 2 2 3 3 4 4 4 4 5
+G 0 1 1 2 2 2 2 2 3 3 4 5 5 5 5
+A 0 1 1 2 2 2 2 2 3 3 4 5 5 5 5
+T 0 1 1 2 3 3 3 3 3 3 4 5 6 6 6
+T 0 1 1 2 3 4 4 4 4 4 4 5 6 6 6
+
+-- Dynamic Programming LCS --
+LCS        : CTGAGT
+Length     : 6
+Comparisons: 8,697
+Time (ms)  : 0.0000e+00
+Space (MB) : 1.2970e-03
+
+-- Brute Force LCS --
+LCS        : CTGAGT
+Length     : 6
+Comparisons: 1,759,127
+Time (ms)  : 1.0000e+00
+Space (MB) : 4.0001e+00
+
+======================================================================
+
+Comparing sequences S4 vs S9
+Longest common subsequence | Length: 9
+GCTGAGATT
+
+Printing out subsequence matrix...
+	  G C C C T A T C G C C A G A T C A A T
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+G 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+C 0 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+T 0 1 2 2 2 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3
+G 0 1 2 2 2 3 3 3 3 4 4 4 4 4 4 4 4 4 4 4
+G 0 1 2 2 2 3 3 3 3 4 4 4 4 5 5 5 5 5 5 5
+A 0 1 2 2 2 3 4 4 4 4 4 4 5 5 6 6 6 6 6 6
+G 0 1 2 2 2 3 4 4 4 5 5 5 5 6 6 6 6 6 6 6
+A 0 1 2 2 2 3 4 4 4 5 5 5 6 6 7 7 7 7 7 7
+T 0 1 2 2 2 3 4 5 5 5 5 5 6 6 7 8 8 8 8 8
+T 0 1 2 2 2 3 4 5 5 5 5 5 6 6 7 8 8 8 8 9
+
+-- Dynamic Programming LCS --
+LCS        : GCTGAGATT
+Length     : 9
+Comparisons: 8,697
+Time (ms)  : 0.0000e+00
+Space (MB) : 1.2970e-03
+
+-- Brute Force LCS --
+LCS        : GCTGAGATT
+Length     : 9
+Comparisons: 1,759,127
+Time (ms)  : 1.0000e+00
+Space (MB) : 4.0001e+00
+
+======================================================================
+
+Comparing sequences S4 vs S10
+Longest common subsequence | Length: 8
+GCTGGGAT
+
+Printing out subsequence matrix...
+	  C G T C G C T G T G G A A C T A
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+G 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+C 0 1 1 1 2 2 2 2 2 2 2 2 2 2 2 2 2
+T 0 1 1 2 2 2 2 3 3 3 3 3 3 3 3 3 3
+G 0 1 2 2 2 3 3 3 4 4 4 4 4 4 4 4 4
+G 0 1 2 2 2 3 3 3 4 4 5 5 5 5 5 5 5
+A 0 1 2 2 2 3 3 3 4 4 5 5 6 6 6 6 6
+G 0 1 2 2 2 3 3 3 4 4 5 6 6 6 6 6 6
+A 0 1 2 2 2 3 3 3 4 4 5 6 7 7 7 7 7
+T 0 1 2 3 3 3 3 4 4 5 5 6 7 7 7 8 8
+T 0 1 2 3 3 3 3 4 4 5 5 6 7 7 7 8 8
+
+-- Dynamic Programming LCS --
+LCS        : GCTGGGAT
+Length     : 8
+Comparisons: 8,697
+Time (ms)  : 0.0000e+00
+Space (MB) : 1.2970e-03
+
+-- Brute Force LCS --
+LCS        : GCTGGAAT
+Length     : 8
+Comparisons: 1,759,127
+Time (ms)  : 1.0000e+00
+Space (MB) : 4.0001e+00
+
+======================================================================
+
+Comparing sequences S5 vs S6
+Longest common subsequence | Length: 7
+AGCCAGT
+
+Printing out subsequence matrix...
+	  A G C C A C C C G C G C T
+0 0 0 0 0 0 0 0 0 0 0 0 0 0
+C 0 0 0 1 1 1 1 1 1 1 1 1 1 1
+A 0 1 1 1 1 2 2 2 2 2 2 2 2 2
+T 0 1 1 1 1 2 2 2 2 2 2 2 2 3
+A 0 1 1 1 1 2 2 2 2 2 2 2 2 3
+C 0 1 1 2 2 2 3 3 3 3 3 3 3 3
+T 0 1 1 2 2 2 3 3 3 3 3 3 3 4
+T 0 1 1 2 2 2 3 3 3 3 3 3 3 4
+A 0 1 1 2 2 3 3 3 3 3 3 3 3 4
+G 0 1 2 2 2 3 3 3 3 4 4 4 4 4
+G 0 1 2 2 2 3 3 3 3 4 4 5 5 5
+C 0 1 2 3 3 3 4 4 4 4 5 5 6 6
+T 0 1 2 3 3 3 4 4 4 4 5 5 6 7
+C 0 1 2 3 4 4 4 5 5 5 5 5 6 7
+A 0 1 2 3 4 5 5 5 5 5 5 5 6 7
+T 0 1 2 3 4 5 5 5 5 5 5 5 6 7
+G 0 1 2 3 4 5 5 5 5 6 6 6 6 7
+T 0 1 2 3 4 5 5 5 5 6 6 6 6 7
+
+-- Dynamic Programming LCS --
+LCS        : AGCCAGT
+Length     : 7
+Comparisons: 8,697
+Time (ms)  : 0.0000e+00
+Space (MB) : 1.2970e-03
+
+-- Brute Force LCS --
+LCS        : AGCCAGT
+Length     : 7
+Comparisons: 1,759,127
+Time (ms)  : 1.0000e+00
+Space (MB) : 4.0001e+00
+
+======================================================================
+
+Comparing sequences S5 vs S7
+Longest common subsequence | Length: 8
+TATTCTCG
+
+Printing out subsequence matrix...
+	  T A A A T T C T C G
+0 0 0 0 0 0 0 0 0 0 0
+C 0 0 0 0 0 0 0 1 1 1 1
+A 0 0 1 1 1 1 1 1 1 1 1
+T 0 1 1 1 1 2 2 2 2 2 2
+A 0 1 2 2 2 2 2 2 2 2 2
+C 0 1 2 2 2 2 2 3 3 3 3
+T 0 1 2 2 2 3 3 3 4 4 4
+T 0 1 2 2 2 3 4 4 4 4 4
+A 0 1 2 3 3 3 4 4 4 4 4
+G 0 1 2 3 3 3 4 4 4 4 5
+G 0 1 2 3 3 3 4 4 4 4 5
+C 0 1 2 3 3 3 4 5 5 5 5
+T 0 1 2 3 3 4 4 5 6 6 6
+C 0 1 2 3 3 4 4 5 6 7 7
+A 0 1 2 3 4 4 4 5 6 7 7
+T 0 1 2 3 4 5 5 5 6 7 7
+G 0 1 2 3 4 5 5 5 6 7 8
+T 0 1 2 3 4 5 6 6 6 7 8
+
+-- Dynamic Programming LCS --
+LCS        : TATTCTCG
+Length     : 8
+Comparisons: 8,697
+Time (ms)  : 0.0000e+00
+Space (MB) : 1.2970e-03
+
+-- Brute Force LCS --
+LCS        : TATTCTCG
+Length     : 8
+Comparisons: 1,759,127
+Time (ms)  : 1.0000e+00
+Space (MB) : 4.0001e+00
+
+======================================================================
+
+Comparing sequences S5 vs S8
+Longest common subsequence | Length: 9
+ACTTCCAGT
+
+Printing out subsequence matrix...
+	  A C A T T C C G C A G T G G
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+C 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1
+A 0 1 1 2 2 2 2 2 2 2 2 2 2 2 2
+T 0 1 1 2 3 3 3 3 3 3 3 3 3 3 3
+A 0 1 1 2 3 3 3 3 3 3 4 4 4 4 4
+C 0 1 2 2 3 3 4 4 4 4 4 4 4 4 4
+T 0 1 2 2 3 4 4 4 4 4 4 4 5 5 5
+T 0 1 2 2 3 4 4 4 4 4 4 4 5 5 5
+A 0 1 2 3 3 4 4 4 4 4 5 5 5 5 5
+G 0 1 2 3 3 4 4 4 5 5 5 6 6 6 6
+G 0 1 2 3 3 4 4 4 5 5 5 6 6 7 7
+C 0 1 2 3 3 4 5 5 5 6 6 6 6 7 7
+T 0 1 2 3 4 4 5 5 5 6 6 6 7 7 7
+C 0 1 2 3 4 4 5 6 6 6 6 6 7 7 7
+A 0 1 2 3 4 4 5 6 6 6 7 7 7 7 7
+T 0 1 2 3 4 5 5 6 6 6 7 7 8 8 8
+G 0 1 2 3 4 5 5 6 7 7 7 8 8 9 9
+T 0 1 2 3 4 5 5 6 7 7 7 8 9 9 9
+
+-- Dynamic Programming LCS --
+LCS        : ACTTCCAGT
+Length     : 9
+Comparisons: 8,697
+Time (ms)  : 0.0000e+00
+Space (MB) : 1.2970e-03
+
+-- Brute Force LCS --
+LCS        : ACTTCCAGT
+Length     : 9
+Comparisons: 1,759,127
+Time (ms)  : 1.0000e+00
+Space (MB) : 4.0001e+00
+
+======================================================================
+
+Comparing sequences S5 vs S9
+Longest common subsequence | Length: 10
+CCTAGCCAGT
+
+Printing out subsequence matrix...
+	  G C C C T A T C G C C A G A T C A A T
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+C 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+A 0 0 1 1 1 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+T 0 0 1 1 1 2 2 3 3 3 3 3 3 3 3 3 3 3 3 3
+A 0 0 1 1 1 2 3 3 3 3 3 3 4 4 4 4 4 4 4 4
+C 0 0 1 2 2 2 3 3 4 4 4 4 4 4 4 4 5 5 5 5
+T 0 0 1 2 2 3 3 4 4 4 4 4 4 4 4 5 5 5 5 6
+T 0 0 1 2 2 3 3 4 4 4 4 4 4 4 4 5 5 5 5 6
+A 0 0 1 2 2 3 4 4 4 4 4 4 5 5 5 5 5 6 6 6
+G 0 1 1 2 2 3 4 4 4 5 5 5 5 6 6 6 6 6 6 6
+G 0 1 1 2 2 3 4 4 4 5 5 5 5 6 6 6 6 6 6 6
+C 0 1 2 2 3 3 4 4 5 5 6 6 6 6 6 6 7 7 7 7
+T 0 1 2 2 3 4 4 5 5 5 6 6 6 6 6 7 7 7 7 8
+C 0 1 2 3 3 4 4 5 6 6 6 7 7 7 7 7 8 8 8 8
+A 0 1 2 3 3 4 5 5 6 6 6 7 8 8 8 8 8 9 9 9
+T 0 1 2 3 3 4 5 6 6 6 6 7 8 8 8 9 9 9 9 10
+G 0 1 2 3 3 4 5 6 6 7 7 7 8 9 9 9 9 9 9 10
+T 0 1 2 3 3 4 5 6 6 7 7 7 8 9 9 10 10 10 10 10
+
+-- Dynamic Programming LCS --
+LCS        : CCTAGCCAGT
+Length     : 10
+Comparisons: 8,697
+Time (ms)  : 0.0000e+00
+Space (MB) : 1.2970e-03
+
+-- Brute Force LCS --
+LCS        : CATCAGTCAT
+Length     : 10
+Comparisons: 1,759,127
+Time (ms)  : 1.0000e+00
+Space (MB) : 4.0001e+00
+
+======================================================================
+
+Comparing sequences S5 vs S10
+Longest common subsequence | Length: 10
+CTCTTGGCTA
+
+Printing out subsequence matrix...
+	  C G T C G C T G T G G A A C T A
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+C 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+A 0 1 1 1 1 1 1 1 1 1 1 1 2 2 2 2 2
+T 0 1 1 2 2 2 2 2 2 2 2 2 2 2 2 3 3
+A 0 1 1 2 2 2 2 2 2 2 2 2 3 3 3 3 4
+C 0 1 1 2 3 3 3 3 3 3 3 3 3 3 4 4 4
+T 0 1 1 2 3 3 3 4 4 4 4 4 4 4 4 5 5
+T 0 1 1 2 3 3 3 4 4 5 5 5 5 5 5 5 5
+A 0 1 1 2 3 3 3 4 4 5 5 5 6 6 6 6 6
+G 0 1 2 2 3 4 4 4 5 5 6 6 6 6 6 6 6
+G 0 1 2 2 3 4 4 4 5 5 6 7 7 7 7 7 7
+C 0 1 2 2 3 4 5 5 5 5 6 7 7 7 8 8 8
+T 0 1 2 3 3 4 5 6 6 6 6 7 7 7 8 9 9
+C 0 1 2 3 4 4 5 6 6 6 6 7 7 7 8 9 9
+A 0 1 2 3 4 4 5 6 6 6 6 7 8 8 8 9 10
+T 0 1 2 3 4 4 5 6 6 7 7 7 8 8 8 9 10
+G 0 1 2 3 4 5 5 6 7 7 8 8 8 8 8 9 10
+T 0 1 2 3 4 5 5 6 7 8 8 8 8 8 8 9 10
+
+-- Dynamic Programming LCS --
+LCS        : CTCTTGGCTA
+Length     : 10
+Comparisons: 8,697
+Time (ms)  : 0.0000e+00
+Space (MB) : 1.2970e-03
+
+-- Brute Force LCS --
+LCS        : CTCTTGGCTA
+Length     : 10
+Comparisons: 1,759,127
+Time (ms)  : 1.0000e+00
+Space (MB) : 4.0001e+00
+
+======================================================================
+
+Comparing sequences S6 vs S7
+Longest common subsequence | Length: 5
+AACCG
+
+Printing out subsequence matrix...
+	  T A A A T T C T C G
+0 0 0 0 0 0 0 0 0 0 0
+A 0 0 1 1 1 1 1 1 1 1 1
+G 0 0 1 1 1 1 1 1 1 1 2
+C 0 0 1 1 1 1 1 2 2 2 2
+C 0 0 1 1 1 1 1 2 2 3 3
+A 0 0 1 2 2 2 2 2 2 3 3
+C 0 0 1 2 2 2 2 3 3 3 3
+C 0 0 1 2 2 2 2 3 3 4 4
+C 0 0 1 2 2 2 2 3 3 4 4
+G 0 0 1 2 2 2 2 3 3 4 5
+C 0 0 1 2 2 2 2 3 3 4 5
+G 0 0 1 2 2 2 2 3 3 4 5
+C 0 0 1 2 2 2 2 3 3 4 5
+T 0 1 1 2 2 3 3 3 4 4 5
+
+-- Dynamic Programming LCS --
+LCS        : AACCG
+Length     : 5
+Comparisons: 8,697
+Time (ms)  : 0.0000e+00
+Space (MB) : 1.2970e-03
+
+-- Brute Force LCS --
+LCS        : AACCG
+Length     : 5
+Comparisons: 1,759,127
+Time (ms)  : 1.0000e+00
+Space (MB) : 4.0001e+00
+
+======================================================================
+
+Comparing sequences S6 vs S8
+Longest common subsequence | Length: 9
+ACACCGCGT
+
+Printing out subsequence matrix...
+	  A C A T T C C G C A G T G G
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+A 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+G 0 1 1 1 1 1 1 1 2 2 2 2 2 2 2
+C 0 1 2 2 2 2 2 2 2 3 3 3 3 3 3
+C 0 1 2 2 2 2 3 3 3 3 3 3 3 3 3
+A 0 1 2 3 3 3 3 3 3 3 4 4 4 4 4
+C 0 1 2 3 3 3 4 4 4 4 4 4 4 4 4
+C 0 1 2 3 3 3 4 5 5 5 5 5 5 5 5
+C 0 1 2 3 3 3 4 5 5 6 6 6 6 6 6
+G 0 1 2 3 3 3 4 5 6 6 6 7 7 7 7
+C 0 1 2 3 3 3 4 5 6 7 7 7 7 7 7
+G 0 1 2 3 3 3 4 5 6 7 7 8 8 8 8
+C 0 1 2 3 3 3 4 5 6 7 7 8 8 8 8
+T 0 1 2 3 4 4 4 5 6 7 7 8 9 9 9
+
+-- Dynamic Programming LCS --
+LCS        : ACACCGCGT
+Length     : 9
+Comparisons: 8,697
+Time (ms)  : 0.0000e+00
+Space (MB) : 1.2970e-03
+
+-- Brute Force LCS --
+LCS        : ACACCGCGT
+Length     : 9
+Comparisons: 1,759,127
+Time (ms)  : 1.0000e+00
+Space (MB) : 4.0001e+00
+
+======================================================================
+
+Comparing sequences S6 vs S9
+Longest common subsequence | Length: 10
+GCCCCGCGCT
+
+Printing out subsequence matrix...
+	  G C C C T A T C G C C A G A T C A A T
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+A 0 0 0 0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+G 0 1 1 1 1 1 1 1 1 2 2 2 2 2 2 2 2 2 2 2
+C 0 1 2 2 2 2 2 2 2 2 3 3 3 3 3 3 3 3 3 3
+C 0 1 2 3 3 3 3 3 3 3 3 4 4 4 4 4 4 4 4 4
+A 0 1 2 3 3 3 4 4 4 4 4 4 5 5 5 5 5 5 5 5
+C 0 1 2 3 4 4 4 4 5 5 5 5 5 5 5 5 6 6 6 6
+C 0 1 2 3 4 4 4 4 5 5 6 6 6 6 6 6 6 6 6 6
+C 0 1 2 3 4 4 4 4 5 5 6 7 7 7 7 7 7 7 7 7
+G 0 1 2 3 4 4 4 4 5 6 6 7 7 8 8 8 8 8 8 8
+C 0 1 2 3 4 4 4 4 5 6 7 7 7 8 8 8 9 9 9 9
+G 0 1 2 3 4 4 4 4 5 6 7 7 7 8 8 8 9 9 9 9
+C 0 1 2 3 4 4 4 4 5 6 7 8 8 8 8 8 9 9 9 9
+T 0 1 2 3 4 5 5 5 5 6 7 8 8 8 8 9 9 9 9 10
+
+-- Dynamic Programming LCS --
+LCS        : GCCCCGCGCT
+Length     : 10
+Comparisons: 8,697
+Time (ms)  : 0.0000e+00
+Space (MB) : 1.2970e-03
+
+-- Brute Force LCS --
+LCS        : GCCACCCGCT
+Length     : 10
+Comparisons: 1,759,127
+Time (ms)  : 1.0000e+00
+Space (MB) : 4.0001e+00
+
+======================================================================
+
+Comparing sequences S6 vs S10
+Longest common subsequence | Length: 7
+CCGCGCT
+
+Printing out subsequence matrix...
+	  C G T C G C T G T G G A A C T A
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+A 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1
+G 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+C 0 1 1 1 2 2 2 2 2 2 2 2 2 2 2 2 2
+C 0 1 1 1 2 2 3 3 3 3 3 3 3 3 3 3 3
+A 0 1 1 1 2 2 3 3 3 3 3 3 4 4 4 4 4
+C 0 1 1 1 2 2 3 3 3 3 3 3 4 4 5 5 5
+C 0 1 1 1 2 2 3 3 3 3 3 3 4 4 5 5 5
+C 0 1 1 1 2 2 3 3 3 3 3 3 4 4 5 5 5
+G 0 1 2 2 2 3 3 3 4 4 4 4 4 4 5 5 5
+C 0 1 2 2 3 3 4 4 4 4 4 4 4 4 5 5 5
+G 0 1 2 2 3 4 4 4 5 5 5 5 5 5 5 5 5
+C 0 1 2 2 3 4 5 5 5 5 5 5 5 5 6 6 6
+T 0 1 2 3 3 4 5 6 6 6 6 6 6 6 6 7 7
+
+-- Dynamic Programming LCS --
+LCS        : CCGCGCT
+Length     : 7
+Comparisons: 8,697
+Time (ms)  : 0.0000e+00
+Space (MB) : 1.2970e-03
+
+-- Brute Force LCS --
+LCS        : GCCGGCT
+Length     : 7
+Comparisons: 1,759,127
+Time (ms)  : 1.0000e+00
+Space (MB) : 4.0001e+00
+
+======================================================================
+
+Comparing sequences S7 vs S8
+Longest common subsequence | Length: 7
+AATTCCG
+
+Printing out subsequence matrix...
+	  A C A T T C C G C A G T G G
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+T 0 0 0 0 1 1 1 1 1 1 1 1 1 1 1
+A 0 1 1 1 1 1 1 1 1 1 2 2 2 2 2
+A 0 1 1 2 2 2 2 2 2 2 2 2 2 2 2
+A 0 1 1 2 2 2 2 2 2 2 3 3 3 3 3
+T 0 1 1 2 3 3 3 3 3 3 3 3 4 4 4
+T 0 1 1 2 3 4 4 4 4 4 4 4 4 4 4
+C 0 1 2 2 3 4 5 5 5 5 5 5 5 5 5
+T 0 1 2 2 3 4 5 5 5 5 5 5 6 6 6
+C 0 1 2 2 3 4 5 6 6 6 6 6 6 6 6
+G 0 1 2 2 3 4 5 6 7 7 7 7 7 7 7
+
+-- Dynamic Programming LCS --
+LCS        : AATTCCG
+Length     : 7
+Comparisons: 8,697
+Time (ms)  : 0.0000e+00
+Space (MB) : 1.2970e-03
+
+-- Brute Force LCS --
+LCS        : AATTCTG
+Length     : 7
+Comparisons: 1,759,127
+Time (ms)  : 1.0000e+00
+Space (MB) : 4.0001e+00
+
+======================================================================
+
+Comparing sequences S7 vs S9
+Longest common subsequence | Length: 7
+TAAATCT
+
+Printing out subsequence matrix...
+	  G C C C T A T C G C C A G A T C A A T
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+T 0 0 0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+A 0 0 0 0 0 1 2 2 2 2 2 2 2 2 2 2 2 2 2 2
+A 0 0 0 0 0 1 2 2 2 2 2 2 3 3 3 3 3 3 3 3
+A 0 0 0 0 0 1 2 2 2 2 2 2 3 3 4 4 4 4 4 4
+T 0 0 0 0 0 1 2 3 3 3 3 3 3 3 4 5 5 5 5 5
+T 0 0 0 0 0 1 2 3 3 3 3 3 3 3 4 5 5 5 5 6
+C 0 0 1 1 1 1 2 3 4 4 4 4 4 4 4 5 6 6 6 6
+T 0 0 1 1 1 2 2 3 4 4 4 4 4 4 4 5 6 6 6 7
+C 0 0 1 2 2 2 2 3 4 4 5 5 5 5 5 5 6 6 6 7
+G 0 1 1 2 2 2 2 3 4 5 5 5 5 6 6 6 6 6 6 7
+
+-- Dynamic Programming LCS --
+LCS        : TAAATCT
+Length     : 7
+Comparisons: 8,697
+Time (ms)  : 0.0000e+00
+Space (MB) : 1.2970e-03
+
+-- Brute Force LCS --
+LCS        : TAAATCT
+Length     : 7
+Comparisons: 1,759,127
+Time (ms)  : 1.0000e+00
+Space (MB) : 4.0001e+00
+
+======================================================================
+
+Comparing sequences S7 vs S10
+Longest common subsequence | Length: 5
+TTTCT
+
+Printing out subsequence matrix...
+	  C G T C G C T G T G G A A C T A
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+T 0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+A 0 0 0 1 1 1 1 1 1 1 1 1 2 2 2 2 2
+A 0 0 0 1 1 1 1 1 1 1 1 1 2 3 3 3 3
+A 0 0 0 1 1 1 1 1 1 1 1 1 2 3 3 3 4
+T 0 0 0 1 1 1 1 2 2 2 2 2 2 3 3 4 4
+T 0 0 0 1 1 1 1 2 2 3 3 3 3 3 3 4 4
+C 0 1 1 1 2 2 2 2 2 3 3 3 3 3 4 4 4
+T 0 1 1 2 2 2 2 3 3 3 3 3 3 3 4 5 5
+C 0 1 1 2 3 3 3 3 3 3 3 3 3 3 4 5 5
+G 0 1 2 2 3 4 4 4 4 4 4 4 4 4 4 5 5
+
+-- Dynamic Programming LCS --
+LCS        : TTTCT
+Length     : 5
+Comparisons: 8,697
+Time (ms)  : 0.0000e+00
+Space (MB) : 1.2970e-03
+
+-- Brute Force LCS --
+LCS        : TAACT
+Length     : 5
+Comparisons: 1,759,127
+Time (ms)  : 1.0000e+00
+Space (MB) : 4.0001e+00
+
+======================================================================
+
+Comparing sequences S8 vs S9
+Longest common subsequence | Length: 9
+CTTCGCAGT
+
+Printing out subsequence matrix...
+	  G C C C T A T C G C C A G A T C A A T
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+A 0 0 0 0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+C 0 0 1 1 1 1 1 1 2 2 2 2 2 2 2 2 2 2 2 2
+A 0 0 1 1 1 1 2 2 2 2 2 2 3 3 3 3 3 3 3 3
+T 0 0 1 1 1 2 2 3 3 3 3 3 3 3 3 4 4 4 4 4
+T 0 0 1 1 1 2 2 3 3 3 3 3 3 3 3 4 4 4 4 5
+C 0 0 1 2 2 2 2 3 4 4 4 4 4 4 4 4 5 5 5 5
+C 0 0 1 2 3 3 3 3 4 4 5 5 5 5 5 5 5 5 5 5
+G 0 1 1 2 3 3 3 3 4 5 5 5 5 6 6 6 6 6 6 6
+C 0 1 2 2 3 3 3 3 4 5 6 6 6 6 6 6 7 7 7 7
+A 0 1 2 2 3 3 4 4 4 5 6 6 7 7 7 7 7 8 8 8
+G 0 1 2 2 3 3 4 4 4 5 6 6 7 8 8 8 8 8 8 8
+T 0 1 2 2 3 4 4 5 5 5 6 6 7 8 8 9 9 9 9 9
+G 0 1 2 2 3 4 4 5 5 6 6 6 7 8 8 9 9 9 9 9
+G 0 1 2 2 3 4 4 5 5 6 6 6 7 8 8 9 9 9 9 9
+
+-- Dynamic Programming LCS --
+LCS        : CTTCGCAGT
+Length     : 9
+Comparisons: 8,697
+Time (ms)  : 0.0000e+00
+Space (MB) : 1.2970e-03
+
+-- Brute Force LCS --
+LCS        : CATCCGCAT
+Length     : 9
+Comparisons: 1,759,127
+Time (ms)  : 1.0000e+00
+Space (MB) : 4.0001e+00
+
+======================================================================
+
+Comparing sequences S8 vs S10
+Longest common subsequence | Length: 9
+CTCGCGTGG
+
+Printing out subsequence matrix...
+	  C G T C G C T G T G G A A C T A
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+A 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1
+C 0 1 1 1 1 1 1 1 1 1 1 1 1 1 2 2 2
+A 0 1 1 1 1 1 1 1 1 1 1 1 2 2 2 2 3
+T 0 1 1 2 2 2 2 2 2 2 2 2 2 2 2 3 3
+T 0 1 1 2 2 2 2 3 3 3 3 3 3 3 3 3 3
+C 0 1 1 2 3 3 3 3 3 3 3 3 3 3 4 4 4
+C 0 1 1 2 3 3 4 4 4 4 4 4 4 4 4 4 4
+G 0 1 2 2 3 4 4 4 5 5 5 5 5 5 5 5 5
+C 0 1 2 2 3 4 5 5 5 5 5 5 5 5 6 6 6
+A 0 1 2 2 3 4 5 5 5 5 5 5 6 6 6 6 7
+G 0 1 2 2 3 4 5 5 6 6 6 6 6 6 6 6 7
+T 0 1 2 3 3 4 5 6 6 7 7 7 7 7 7 7 7
+G 0 1 2 3 3 4 5 6 7 7 8 8 8 8 8 8 8
+G 0 1 2 3 3 4 5 6 7 7 8 9 9 9 9 9 9
+
+-- Dynamic Programming LCS --
+LCS        : CTCGCGTGG
+Length     : 9
+Comparisons: 8,697
+Time (ms)  : 0.0000e+00
+Space (MB) : 1.2970e-03
+
+-- Brute Force LCS --
+LCS        : CTCGCGTGG
+Length     : 9
+Comparisons: 1,759,127
+Time (ms)  : 1.0000e+00
+Space (MB) : 4.0001e+00
+
+======================================================================
+
+Comparing sequences S9 vs S10
+Longest common subsequence | Length: 10
+CTCGCGTAAT
+
+Printing out subsequence matrix...
+	  C G T C G C T G T G G A A C T A
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+G 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+C 0 1 1 1 2 2 2 2 2 2 2 2 2 2 2 2 2
+C 0 1 1 1 2 2 3 3 3 3 3 3 3 3 3 3 3
+C 0 1 1 1 2 2 3 3 3 3 3 3 3 3 4 4 4
+T 0 1 1 2 2 2 3 4 4 4 4 4 4 4 4 5 5
+A 0 1 1 2 2 2 3 4 4 4 4 4 5 5 5 5 6
+T 0 1 1 2 2 2 3 4 4 5 5 5 5 5 5 6 6
+C 0 1 1 2 3 3 3 4 4 5 5 5 5 5 6 6 6
+G 0 1 2 2 3 4 4 4 5 5 6 6 6 6 6 6 6
+C 0 1 2 2 3 4 5 5 5 5 6 6 6 6 7 7 7
+C 0 1 2 2 3 4 5 5 5 5 6 6 6 6 7 7 7
+A 0 1 2 2 3 4 5 5 5 5 6 6 7 7 7 7 8
+G 0 1 2 2 3 4 5 5 6 6 6 7 7 7 7 7 8
+A 0 1 2 2 3 4 5 5 6 6 6 7 8 8 8 8 8
+T 0 1 2 3 3 4 5 6 6 7 7 7 8 8 8 9 9
+C 0 1 2 3 4 4 5 6 6 7 7 7 8 8 9 9 9
+A 0 1 2 3 4 4 5 6 6 7 7 7 8 9 9 9 10
+A 0 1 2 3 4 4 5 6 6 7 7 7 8 9 9 9 10
+T 0 1 2 3 4 4 5 6 6 7 7 7 8 9 9 10 10
+
+-- Dynamic Programming LCS --
+LCS        : CTCGCGTAAT
+Length     : 10
+Comparisons: 8,697
+Time (ms)  : 0.0000e+00
+Space (MB) : 1.2970e-03
+
+-- Brute Force LCS --
+LCS        : CTCGCGTAAT
+Length     : 10
+Comparisons: 1,759,127
+Time (ms)  : 1.0000e+00
+Space (MB) : 4.0001e+00
+
+======================================================================
+
+Summary Table (Comparisons, Time, and Space)
+======================================================================
+Pair             | Dyn_Comp     Dyn_Time     Dyn_MB       | BF_Comp      BF_Time      BF_MB        | LCS_Len
+----------------------------------------------------------------------
+S1 vs S2         |        8,697 0.0000e+00 1.2970e-03 |    1,759,127   1.0000e+00   4.0001e+00 | 5
+S1 vs S3         |        8,697 0.0000e+00 1.2970e-03 |    1,759,127   1.0000e+00   4.0001e+00 | 6
+S1 vs S4         |        8,697 0.0000e+00 1.2970e-03 |    1,759,127   1.0000e+00   4.0001e+00 | 7
+S1 vs S5         |        8,697 0.0000e+00 1.2970e-03 |    1,759,127   1.0000e+00   4.0001e+00 | 7
+S1 vs S6         |        8,697 0.0000e+00 1.2970e-03 |    1,759,127   1.0000e+00   4.0001e+00 | 7
+S1 vs S7         |        8,697 0.0000e+00 1.2970e-03 |    1,759,127   1.0000e+00   4.0001e+00 | 5
+S1 vs S8         |        8,697 0.0000e+00 1.2970e-03 |    1,759,127   1.0000e+00   4.0001e+00 | 7
+S1 vs S9         |        8,697 0.0000e+00 1.2970e-03 |    1,759,127   1.0000e+00   4.0001e+00 | 9
+S1 vs S10        |        8,697 0.0000e+00 1.2970e-03 |    1,759,127   1.0000e+00   4.0001e+00 | 7
+S2 vs S3         |        8,697 0.0000e+00 1.2970e-03 |    1,759,127   1.0000e+00   4.0001e+00 | 5
+S2 vs S4         |        8,697 0.0000e+00 1.2970e-03 |    1,759,127   1.0000e+00   4.0001e+00 | 5
+S2 vs S5         |        8,697 0.0000e+00 1.2970e-03 |    1,759,127   1.0000e+00   4.0001e+00 | 8
+S2 vs S6         |        8,697 0.0000e+00 1.2970e-03 |    1,759,127   1.0000e+00   4.0001e+00 | 7
+S2 vs S7         |        8,697 0.0000e+00 1.2970e-03 |    1,759,127   1.0000e+00   4.0001e+00 | 6
+S2 vs S8         |        8,697 0.0000e+00 1.2970e-03 |    1,759,127   1.0000e+00   4.0001e+00 | 7
+S2 vs S9         |        8,697 0.0000e+00 1.2970e-03 |    1,759,127   1.0000e+00   4.0001e+00 | 8
+S2 vs S10        |        8,697 0.0000e+00 1.2970e-03 |    1,759,127   1.0000e+00   4.0001e+00 | 8
+S3 vs S4         |        8,697 0.0000e+00 1.2970e-03 |    1,759,127   1.0000e+00   4.0001e+00 | 5
+S3 vs S5         |        8,697 0.0000e+00 1.2970e-03 |    1,759,127   1.0000e+00   4.0001e+00 | 8
+S3 vs S6         |        8,697 0.0000e+00 1.2970e-03 |    1,759,127   1.0000e+00   4.0001e+00 | 6
+S3 vs S7         |        8,697 0.0000e+00 1.2970e-03 |    1,759,127   1.0000e+00   4.0001e+00 | 7
+S3 vs S8         |        8,697 0.0000e+00 1.2970e-03 |    1,759,127   1.0000e+00   4.0001e+00 | 6
+S3 vs S9         |        8,697 0.0000e+00 1.2970e-03 |    1,759,127   1.0000e+00   4.0001e+00 | 9
+S3 vs S10        |        8,697 0.0000e+00 1.2970e-03 |    1,759,127   1.0000e+00   4.0001e+00 | 7
+S4 vs S5         |        8,697 0.0000e+00 1.2970e-03 |    1,759,127   1.0000e+00   4.0001e+00 | 7
+S4 vs S6         |        8,697 0.0000e+00 1.2970e-03 |    1,759,127   1.0000e+00   4.0001e+00 | 5
+S4 vs S7         |        8,697 0.0000e+00 1.2970e-03 |    1,759,127   1.0000e+00   4.0001e+00 | 5
+S4 vs S8         |        8,697 0.0000e+00 1.2970e-03 |    1,759,127   1.0000e+00   4.0001e+00 | 6
+S4 vs S9         |        8,697 0.0000e+00 1.2970e-03 |    1,759,127   1.0000e+00   4.0001e+00 | 9
+S4 vs S10        |        8,697 0.0000e+00 1.2970e-03 |    1,759,127   1.0000e+00   4.0001e+00 | 8
+S5 vs S6         |        8,697 0.0000e+00 1.2970e-03 |    1,759,127   1.0000e+00   4.0001e+00 | 7
+S5 vs S7         |        8,697 0.0000e+00 1.2970e-03 |    1,759,127   1.0000e+00   4.0001e+00 | 8
+S5 vs S8         |        8,697 0.0000e+00 1.2970e-03 |    1,759,127   1.0000e+00   4.0001e+00 | 9
+S5 vs S9         |        8,697 0.0000e+00 1.2970e-03 |    1,759,127   1.0000e+00   4.0001e+00 | 10
+S5 vs S10        |        8,697 0.0000e+00 1.2970e-03 |    1,759,127   1.0000e+00   4.0001e+00 | 10
+S6 vs S7         |        8,697 0.0000e+00 1.2970e-03 |    1,759,127   1.0000e+00   4.0001e+00 | 5
+S6 vs S8         |        8,697 0.0000e+00 1.2970e-03 |    1,759,127   1.0000e+00   4.0001e+00 | 9
+S6 vs S9         |        8,697 0.0000e+00 1.2970e-03 |    1,759,127   1.0000e+00   4.0001e+00 | 10
+S6 vs S10        |        8,697 0.0000e+00 1.2970e-03 |    1,759,127   1.0000e+00   4.0001e+00 | 7
+S7 vs S8         |        8,697 0.0000e+00 1.2970e-03 |    1,759,127   1.0000e+00   4.0001e+00 | 7
+S7 vs S9         |        8,697 0.0000e+00 1.2970e-03 |    1,759,127   1.0000e+00   4.0001e+00 | 7
+S7 vs S10        |        8,697 0.0000e+00 1.2970e-03 |    1,759,127   1.0000e+00   4.0001e+00 | 5
+S8 vs S9         |        8,697 0.0000e+00 1.2970e-03 |    1,759,127   1.0000e+00   4.0001e+00 | 9
+S8 vs S10        |        8,697 0.0000e+00 1.2970e-03 |    1,759,127   1.0000e+00   4.0001e+00 | 9
+S9 vs S10        |        8,697 0.0000e+00 1.2970e-03 |    1,759,127   1.0000e+00   4.0001e+00 | 10
+======================================================================
+
+===== Aggregate Performance Summary =====
+Dynamic Programming: Total Time = 0 ms | Total Space = 0.037 MB
+Brute Force        : Total Time = 11 ms | Total Space = 27.003 MB
+==========================================

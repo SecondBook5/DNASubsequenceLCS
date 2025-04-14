@@ -27,16 +27,15 @@ import java.util.stream.Collectors;
  * Generates two side-by-side PNG plots showing LCS scaling behavior:
  * - One plot for Dynamic Programming (linear scale)
  * - One plot for Brute Force (logarithmic scale, L capped)
- * Plots both theoretical and fitted models.
+ * Plots both theoretical and fitted models, and includes annotated formula overlays.
  */
 public class LScalingGraphGenerator {
 
     /**
-     * Main method to generate both DP and BF plots from the benchmark results.
-     *
-     * @param dynamicResults    List of results from the DP algorithm.
-     * @param bruteForceResults List of results from the BF algorithm (nulls included if skipped).
-     * @param basePath          Output path ending in .png (e.g., "scaling_plot.png")
+     * Main entry point to generate both plots: dynamic and brute force.
+     * @param dynamicResults    List of dynamic programming LCS results
+     * @param bruteForceResults List of brute force LCS results (nulls if skipped)
+     * @param basePath          PNG output base path (e.g., "scaling_plot.png")
      */
     public static void generateGraph(List<LCSResult> dynamicResults,
                                      List<LCSResult> bruteForceResults,
@@ -46,36 +45,31 @@ public class LScalingGraphGenerator {
     }
 
     /**
-     * Generates the Dynamic Programming scaling plot with linear Y-axis.
-     *
-     * @param results    All DP results from benchmark.
-     * @param outputPath PNG file path to save the graph.
+     * Generates the Dynamic Programming plot with a linear y-axis.
+     * Annotates with the fitted O(L^2) formula.
      */
     private static void generateDynamicPlot(List<LCSResult> results, String outputPath) {
-        // Fit T(L) ≈ c * L^2 model
         double cDyn = CurveFitter.fitPowerLaw(results, 2.0);
 
-        // Create series for actual data, theoretical curve, and fitted model
         XYSeries dynActual = new XYSeries("Observed: Dynamic Programming");
         XYSeries dynTheoretical = new XYSeries("Theoretical: O(L²)");
         XYSeries dynFitted = new XYSeries("Fitted: c·L²");
 
+        int maxL = 0;
         for (LCSResult r : results) {
             int L = extractLengthFromLabel(r.getComparisonLabel());
             long comparisons = r.getMetrics().getComparisonCount();
-
             dynActual.add(L, comparisons);
             dynTheoretical.add(L, Math.pow(L, 2));
             dynFitted.add(L, cDyn * Math.pow(L, 2));
+            maxL = Math.max(maxL, L);
         }
 
-        // Combine into dataset
         XYSeriesCollection dataset = new XYSeriesCollection();
         dataset.addSeries(dynActual);
         dataset.addSeries(dynTheoretical);
         dataset.addSeries(dynFitted);
 
-        // Create the chart
         JFreeChart chart = ChartFactory.createXYLineChart(
                 "LCS Dynamic Programming Scaling",
                 "Sequence Length (L)",
@@ -85,13 +79,16 @@ public class LScalingGraphGenerator {
                 true, true, false
         );
 
-        // Add subtitle for clarity
         chart.addSubtitle(new TextTitle("Growth of Dynamic LCS vs Theoretical and Fitted O(L²)"));
 
-        // Customize plot
         XYPlot plot = chart.getXYPlot();
         XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
-        Color[] colors = { new Color(0x1f78b4), new Color(0x33a02c), new Color(0x6a3d9a) };
+
+        Color[] colors = {
+                new Color(0x1f78b4), // Observed
+                new Color(0x33a02c), // Theoretical
+                new Color(0x6a3d9a)  // Fitted
+        };
 
         for (int i = 0; i < dataset.getSeriesCount(); i++) {
             renderer.setSeriesPaint(i, colors[i]);
@@ -104,7 +101,14 @@ public class LScalingGraphGenerator {
         plot.setDomainGridlinePaint(Color.GRAY);
         plot.setRangeGridlinePaint(Color.GRAY);
 
-        // Export as PNG
+        // Annotate fitted equation
+        String label = String.format("T(L) ≈ %.5f · L²", cDyn);
+        XYTextAnnotation annotation = new XYTextAnnotation(label, maxL * 0.6, cDyn * Math.pow(maxL, 2) * 0.5);
+        annotation.setFont(new Font("SansSerif", Font.BOLD, 12));
+        annotation.setPaint(new Color(0x6a3d9a));
+        annotation.setTextAnchor(TextAnchor.HALF_ASCENT_LEFT);
+        plot.addAnnotation(annotation);
+
         try {
             ChartUtils.saveChartAsPNG(new File(outputPath), chart, 1200, 800);
             System.out.println("Dynamic graph saved to: " + outputPath);
@@ -114,10 +118,8 @@ public class LScalingGraphGenerator {
     }
 
     /**
-     * Generates the Brute Force scaling plot with logarithmic Y-axis.
-     *
-     * @param results    All BF results from benchmark (nulls skipped).
-     * @param outputPath PNG file path to save the graph.
+     * Generates the Brute Force plot with a log-scale y-axis.
+     * Annotates with the fitted O(2^L) formula.
      */
     private static void generateBruteForcePlot(List<LCSResult> results, String outputPath) {
         List<LCSResult> filtered = results.stream()
@@ -137,13 +139,14 @@ public class LScalingGraphGenerator {
         XYSeries bfTheoretical = new XYSeries("Theoretical: O(2^L)");
         XYSeries bfFitted = new XYSeries("Fitted: c·2^L");
 
+        int maxL = 0;
         for (LCSResult r : filtered) {
             int L = extractLengthFromLabel(r.getComparisonLabel());
             long comparisons = r.getMetrics().getComparisonCount();
-
             bfActual.add(L, comparisons);
             bfTheoretical.add(L, Math.pow(2, L));
             bfFitted.add(L, cBF * Math.pow(2, L));
+            maxL = Math.max(maxL, L);
         }
 
         // Combine into dataset
@@ -168,11 +171,16 @@ public class LScalingGraphGenerator {
         XYPlot plot = chart.getXYPlot();
         LogAxis logAxis = new LogAxis("Total Comparisons (log10)");
         logAxis.setBase(10);
-        logAxis.setSmallestValue(1); // Avoid log(0)
+        logAxis.setSmallestValue(1);
         plot.setRangeAxis(logAxis);
 
         XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
-        Color[] colors = { new Color(0xe31a1c), new Color(0xff7f00), new Color(0xb15928) };
+
+        Color[] colors = {
+                new Color(0xe31a1c), // Observed
+                new Color(0xff7f00), // Theoretical
+                new Color(0xb15928)  // Fitted
+        };
 
         for (int i = 0; i < dataset.getSeriesCount(); i++) {
             renderer.setSeriesPaint(i, colors[i]);
@@ -186,7 +194,14 @@ public class LScalingGraphGenerator {
         plot.setDomainGridlinePaint(Color.GRAY);
         plot.setRangeGridlinePaint(Color.GRAY);
 
-        // Export as PNG
+        // Annotate fitted equation
+        String label = String.format("T(L) ≈ %.5f · 2^L", cBF);
+        XYTextAnnotation annotation = new XYTextAnnotation(label, maxL * 0.6, cBF * Math.pow(2, maxL) * 0.5);
+        annotation.setFont(new Font("SansSerif", Font.BOLD, 12));
+        annotation.setPaint(new Color(0xb15928));
+        annotation.setTextAnchor(TextAnchor.HALF_ASCENT_LEFT);
+        plot.addAnnotation(annotation);
+
         try {
             ChartUtils.saveChartAsPNG(new File(outputPath), chart, 1200, 800);
             System.out.println("Brute force graph saved to: " + outputPath);
@@ -196,8 +211,7 @@ public class LScalingGraphGenerator {
     }
 
     /**
-     * Extracts sequence length L from label like \"L30_P1\".
-     * Returns -1 if label format is invalid.
+     * Utility to extract the sequence length L from label format "L30_P1"
      */
     private static int extractLengthFromLabel(String label) {
         try {
