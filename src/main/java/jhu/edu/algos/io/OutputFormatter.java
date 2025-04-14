@@ -46,7 +46,7 @@ public class OutputFormatter {
 
             for (int i = 0; i < dynamicResults.size(); i++) {
                 LCSResult dyn = dynamicResults.get(i);
-                LCSResult bf = bruteForceResults.get(i);
+                LCSResult bf = bruteForceResults.get(i); // May be null
 
                 dualPrint(writer, "\nComparing sequences " + dyn.getComparisonLabel());
                 dualPrint(writer, "Longest common subsequence | Length: " + dyn.getLCSLength());
@@ -62,12 +62,16 @@ public class OutputFormatter {
 
                 // Brute-force block
                 dualPrint(writer, "\n-- Brute Force LCS --");
-                printResultBlock(writer, bf);
+                if (bf != null) {
+                    printResultBlock(writer, bf);
+                } else {
+                    dualPrint(writer, "SKIPPED: Brute-force LCS was not computed due to length cap.");
+                }
 
                 dualPrint(writer, "\n" + "=".repeat(70));
             }
 
-            // Summary
+            // Print final summary table
             printSummaryTable(writer, dynamicResults, bruteForceResults);
 
             // Close the writer after finishing
@@ -79,10 +83,10 @@ public class OutputFormatter {
     }
 
     /**
-     * Prints a single LCS result block to both console and file.
+     * Prints a single result block of LCS stats to both file and terminal.
      *
-     * @param writer PrintWriter for file output
-     * @param result LCSResult object to be printed
+     * @param writer PrintWriter for file
+     * @param result LCSResult object
      */
     private static void printResultBlock(PrintWriter writer, LCSResult result) {
         PerformanceMetrics metrics = result.getMetrics();
@@ -94,11 +98,11 @@ public class OutputFormatter {
     }
 
     /**
-     * Prints a final summary table comparing metrics of both algorithms.
+     * Prints a final summary table of all pairwise comparisons.
      *
-     * @param writer     PrintWriter for file output
-     * @param dynamic    List of results from dynamic algorithm
-     * @param bruteForce List of results from brute-force algorithm
+     * @param writer     PrintWriter
+     * @param dynamic    List of results from dynamic programming
+     * @param bruteForce List of results from brute-force (some may be null)
      */
     private static void printSummaryTable(PrintWriter writer,
                                           List<LCSResult> dynamic,
@@ -117,13 +121,23 @@ public class OutputFormatter {
             LCSResult dyn = dynamic.get(i);
             LCSResult bf = bruteForce.get(i);
             PerformanceMetrics dm = dyn.getMetrics();
-            PerformanceMetrics bm = bf.getMetrics();
+
+            String bfComp = "-";
+            String bfTime = "-";
+            String bfSpace = "-";
+
+            if (bf != null) {
+                PerformanceMetrics bm = bf.getMetrics();
+                bfComp = String.format("%,12d", bm.getComparisonCount());
+                bfTime = String.format("%.4e", bm.getElapsedTimeMs() * 1.0);
+                bfSpace = String.format("%.4e", bm.getEstimatedSpaceMB());
+            }
 
             dualPrint(writer, String.format(
-                    "%-16s | %,12d %.4e %.4e | %,12d %.4e %.4e | %d",
+                    "%-16s | %,12d %.4e %.4e | %12s %12s %12s | %d",
                     dyn.getComparisonLabel(),
                     dm.getComparisonCount(), dm.getElapsedTimeMs() * 1.0, dm.getEstimatedSpaceMB(),
-                    bm.getComparisonCount(), bm.getElapsedTimeMs() * 1.0, bm.getEstimatedSpaceMB(),
+                    bfComp, bfTime, bfSpace,
                     dyn.getLCSLength()
             ));
         }
@@ -132,12 +146,7 @@ public class OutputFormatter {
     }
 
     /**
-     * Prints the DP matrix used to compute the LCS between two sequences.
-     * This is a visual representation of the computation table.
-     *
-     * @param writer PrintWriter for output
-     * @param s1     First sequence
-     * @param s2     Second sequence
+     * Prints the DP matrix used for LCS computation.
      */
     private static void printMatrix(PrintWriter writer, String s1, String s2) {
         int m = s1.length();
@@ -170,23 +179,15 @@ public class OutputFormatter {
     }
 
     /**
-     * Prints a line to both the terminal and the output file.
-     *
-     * @param writer PrintWriter for output file
-     * @param line   The line of text to print
+     * Utility method to write a line to both file and terminal.
      */
     private static void dualPrint(PrintWriter writer, String line) {
-        System.out.println(line);      // Print to terminal
-        writer.println(line);          // Print to file
+        System.out.println(line);
+        writer.println(line);
     }
+
     /**
-     * Appends an aggregate performance summary section to the output file.
-     *
-     * @param dynTime   Total runtime of dynamic programming in milliseconds
-     * @param dynSpace  Total space used by dynamic programming in bytes
-     * @param bfTime    Total runtime of brute-force in milliseconds
-     * @param bfSpace   Total space used by brute-force in bytes
-     * @param outputFile Output file path to append results to
+     * Appends final performance totals to the output file.
      */
     public static void appendPerformanceSummary(long dynTime, long dynSpace,
                                                 long bfTime, long bfSpace,
@@ -205,11 +206,7 @@ public class OutputFormatter {
     }
 
     /**
-     * Prints a symmetric LCS length matrix based on dynamic results.
-     * Labels are taken from the inputSequences map.
-     *
-     * @param inputSequences Map of input keys and sequences (S1, S2, etc.)
-     * @param dynamicResults List of LCSResult objects from dynamic programming
+     * Prints the pairwise LCS length matrix using only dynamic results.
      */
     public static void printLCSMatrix(Map<String, String> inputSequences, List<LCSResult> dynamicResults) {
         System.out.println("\n===== LCS Length Matrix (Dynamic Programming) =====");
@@ -222,25 +219,23 @@ public class OutputFormatter {
 
         // Fill matrix with results
         int index = 0;
+
         for (int i = 0; i < n; i++) {
             matrix[i][i] = "--"; // self comparison
             for (int j = i + 1; j < n; j++) {
-                if (index >= dynamicResults.size()) {
-                    matrix[i][j] = "??"; // fallback for missing results
-                    matrix[j][i] = "??";
+                if (index < dynamicResults.size()) {
+                    String len = String.valueOf(dynamicResults.get(index++).getLCSLength());
+                    matrix[i][j] = len;
+                    matrix[j][i] = len;
                 } else {
-                    LCSResult res = dynamicResults.get(index++);
-                    matrix[i][j] = String.valueOf(res.getLCSLength());
-                    matrix[j][i] = matrix[i][j]; // symmetric
+                    matrix[i][j] = matrix[j][i] = "??";
                 }
             }
         }
 
         // Print header
         System.out.printf("%-6s", "");
-        for (String colLabel : labels) {
-            System.out.printf("%-8s", colLabel);
-        }
+        for (String col : labels) System.out.printf("%-8s", col);
         System.out.println();
 
         // Print each row

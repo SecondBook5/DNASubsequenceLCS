@@ -157,6 +157,26 @@ public class OutputFormatterTest {
         assertTrue(outputContent.contains("S2 vs S3"));
     }
 
+    @Test
+    void testSkipsHandledGracefully() throws Exception {
+        // Replace one brute-force result with null to simulate a skipped computation
+        bfResults.set(1, null);  // Simulate skipping for "S1 vs S3"
+
+        // Regenerate output with skip
+        OutputFormatter.writeResults(inputSequences, dynResults, bfResults, TEST_OUTPUT_FILE);
+        outputContent = Files.readString(Path.of(TEST_OUTPUT_FILE));
+
+        // Check that the "SKIPPED" message appears in detailed output
+        assertTrue(outputContent.contains("SKIPPED: Brute-force LCS was not computed"),
+                "Output should indicate skipped brute-force computation.");
+
+        // Check that the summary table includes "-" in the brute-force columns
+        boolean hasDashPlaceholders = outputContent.lines().anyMatch(line ->
+                line.contains("S1 vs S3") && line.contains("|") && line.contains("-")
+        );
+        assertTrue(hasDashPlaceholders, "Summary row for skipped brute-force result should show '-' values.");
+    }
+
     /**
      * Validates that the LCS length matrix is printed correctly and symmetrically.
      */

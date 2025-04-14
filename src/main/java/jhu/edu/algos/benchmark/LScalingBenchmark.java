@@ -30,7 +30,7 @@ public class LScalingBenchmark {
     private static final int PAIRS_PER_LENGTH = 5;
 
     // Brute force will only be computed if L <= this threshold
-    private static final int BRUTE_FORCE_CAP = 30;
+    private static final int BRUTE_FORCE_CAP = 25;
 
     // Output filenames
     private static final String DEFAULT_TXT = "scaling_benchmark.txt";

@@ -1,14 +1,14 @@
 package jhu.edu.algos;
 
 import jhu.edu.algos.benchmark.LScalingBenchmark;
+import jhu.edu.algos.benchmark.NSequencesBenchmark;
 
 /**
- * Main.java serves as the command-line entry point and dispatcher for
- * the DNASubsequenceLCS project. Supports both comparison and scaling modes.
- *
- * Usage:
- *   java Main compare <input_file.txt> <output_file.txt> [--matrix]
- *   java Main benchmark <output_file.txt> [--plot]
+ * Main.java is the command-line entry point for the LCS project.
+ * Supports:
+ *   - Comparison mode (default): <input_file.txt> <output_file.txt> [--matrix]
+ *   - Length benchmark: benchmark-length <output.txt> [--plot]
+ *   - N benchmark:      benchmark-n <output.txt> [--plot]
  */
 public class Main {
 
@@ -18,61 +18,64 @@ public class Main {
      * @param args Command-line arguments
      */
     public static void main(String[] args) {
-        if (args.length == 0) {
-            printUsageAndExit();
-        }
-
-        String mode = args[0].toLowerCase();
-
         try {
-            switch (mode) {
-                case "compare":
-                    // Accepts input file, output file, and optional --matrix flag
-                    if (args.length < 3 || args.length > 4) {
-                        System.err.println("Usage: java Main compare <input_file.txt> <output_file.txt> [--matrix]");
-                        System.exit(1);
-                    }
-
-                    String inputFile = args[1];
-                    String outputFile = args[2];
-                    boolean showMatrix = args.length == 4 && args[3].equalsIgnoreCase("--matrix");
-
-                    // Validate extensions
-                    if (!inputFile.endsWith(".txt") || !outputFile.endsWith(".txt")) {
-                        System.err.println("Error: Both input and output files must end with .txt");
-                        System.exit(1);
-                    }
-
-                    // Dispatch to comparison driver
-                    LCSDriver.runFromFile(inputFile, outputFile, showMatrix);
-                    break;
-
-                case "benchmark":
-                    // Accepts output file and optional --plot flag
-                    if (args.length < 2 || args.length > 3) {
-                        System.err.println("Usage: java Main benchmark <output_file.txt> [--plot]");
-                        System.exit(1);
-                    }
-
-                    String txtFile = args[1];
-                    boolean plot = args.length == 3 && args[2].equalsIgnoreCase("--plot");
-
-                    if (!txtFile.endsWith(".txt")) {
-                        System.err.println("Error: Benchmark output file must be a .txt file.");
-                        System.exit(1);
-                    }
-
-                    // Derive PNG output file from .txt
-                    String pngFile = txtFile.replaceAll("\\.txt$", "_plot.png");
-
-                    // Dispatch to benchmark module
-                    LScalingBenchmark.run(txtFile, pngFile, plot);
-                    break;
-
-                default:
-                    System.err.println("Unrecognized command: " + mode);
-                    printUsageAndExit();
+            if (args.length == 0) {
+                printUsageAndExit();
             }
+
+            // === Benchmark Modes (require mode flag) ===
+            if (args[0].equalsIgnoreCase("benchmark-length")) {
+                if (args.length < 2 || args.length > 3) {
+                    System.err.println("Usage: java Main benchmark-length <output.txt> [--plot]");
+                    System.exit(1);
+                }
+
+                String txtFile = args[1];
+                boolean plot = args.length == 3 && args[2].equalsIgnoreCase("--plot");
+                if (!txtFile.endsWith(".txt")) {
+                    System.err.println("Error: Benchmark output file must be a .txt file.");
+                    System.exit(1);
+                }
+
+                String pngFile = txtFile.replaceAll("\\.txt$", "_length_plot.png");
+                LScalingBenchmark.run(txtFile, pngFile, plot);
+                return;
+            }
+
+            if (args[0].equalsIgnoreCase("benchmark-n")) {
+                if (args.length < 2 || args.length > 3) {
+                    System.err.println("Usage: java Main benchmark-n <output.txt> [--plot]");
+                    System.exit(1);
+                }
+
+                String txtFile = args[1];
+                boolean plot = args.length == 3 && args[2].equalsIgnoreCase("--plot");
+                if (!txtFile.endsWith(".txt")) {
+                    System.err.println("Error: Benchmark output file must be a .txt file.");
+                    System.exit(1);
+                }
+
+                String pngFile = txtFile.replaceAll("\\.txt$", "_n_plot.png");
+                NSequencesBenchmark.run(txtFile, pngFile, plot);
+                return;
+            }
+
+            // === Default Mode: Compare ===
+            if (args.length < 2 || args.length > 3) {
+                System.err.println("Usage: java Main <input_file.txt> <output_file.txt> [--matrix]");
+                System.exit(1);
+            }
+
+            String inputFile = args[0];
+            String outputFile = args[1];
+            boolean showMatrix = args.length == 3 && args[2].equalsIgnoreCase("--matrix");
+
+            if (!inputFile.endsWith(".txt") || !outputFile.endsWith(".txt")) {
+                System.err.println("Error: Both input and output files must end with .txt");
+                System.exit(1);
+            }
+
+            LCSDriver.runFromFile(inputFile, outputFile, showMatrix);
 
         } catch (Exception e) {
             System.err.println(" Fatal error: " + e.getClass().getSimpleName() + " - " + e.getMessage());
@@ -101,8 +104,9 @@ public class Main {
      */
     private static void printUsageAndExit() {
         System.err.println("Usage:");
-        System.err.println("  java Main compare <input_file.txt> <output_file.txt> [--matrix]");
-        System.err.println("  java Main benchmark <output_file.txt> [--plot]");
+        System.err.println("  java Main <input_file.txt> <output_file.txt> [--matrix]");
+        System.err.println("  java Main benchmark-length <output_file.txt> [--plot]");
+        System.err.println("  java Main benchmark-n <output_file.txt> [--plot]");
         System.exit(1);
     }
 }

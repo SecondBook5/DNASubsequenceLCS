@@ -27,8 +27,8 @@ public class LCSDriverTest {
         List<String> lines = List.of(
                 "S1 = ACCGGTCGACTGCGCGGAAGCCGGCCGAA",
                 "S2 = GTCGTTCGGAATGCCGTTGCTCTGTAAA",
-                "S3 = ATTGCATTGCATGGGCGCGATGCATTTGGTTAATTCCTCG",
-                "S4 = CTTGCTTAAATGTGCA"
+                "S3 = ATTGCATTGCATGGGCGCGATGCATTTGGTTAATTCCTCG",  // long
+                "S4 = CTTGCTTAAATGTGCA"                          // medium
         );
         Files.write(Path.of(INPUT_FILE), lines);
     }
@@ -81,16 +81,24 @@ public class LCSDriverTest {
         for (String pair : expectedPairs) {
             assertTrue(output.contains(pair), "Missing expected pairwise comparison: " + pair);
         }
+
+        // Validate brute-force skipped where appropriate (should print dash "-" instead of real result)
+        assertTrue(output.contains("S3 vs S4") && output.contains("-"),
+                "Should indicate brute-force skipped for long inputs with '-'");
     }
 
-
+    /**
+     * Validates matrix printing does not crash and file is still written.
+     */
     @Test
     void testDriverWithMatrixFlagRunsSuccessfully() throws Exception {
-        // We aren't capturing console output here, but we make sure it doesn't crash with the flag
         LCSDriver.runFromFile(INPUT_FILE, OUTPUT_FILE, true);  // matrix printing enabled
         assertTrue(Files.exists(Path.of(OUTPUT_FILE)), "Output should still be created when --matrix is set");
     }
 
+    /**
+     * Confirms that missing input file throws IOException.
+     */
     @Test
     void testFailsWithMissingFile() {
         Exception ex = assertThrows(IOException.class,

@@ -3,6 +3,7 @@ package jhu.edu.algos;
 import jhu.edu.algos.io.OutputFormatter;
 import jhu.edu.algos.io.SequenceInputHandler;
 import jhu.edu.algos.lcs.*;
+import jhu.edu.algos.utils.PerformanceMetrics;
 
 import java.util.*;
 
@@ -12,6 +13,9 @@ import java.util.*;
  * Results are written to console and output file using OutputFormatter.
  */
 public class LCSDriver {
+
+    // Maximum sequence length allowed for brute force (to avoid blow-up)
+    private static final int BRUTE_FORCE_CAP = 25;
 
     /**
      * CLI entry point for running pairwise LCS comparisons.
@@ -83,15 +87,21 @@ public class LCSDriver {
                 String label = k1 + " vs " + k2;
 
                 LCSResult dynResult = dynAlg.computeLCS(label, s1, s2);
-                LCSResult bruteResult = bruteAlg.computeLCS(label, s1, s2);
-
                 dynamicResults.add(dynResult);
-                bruteForceResults.add(bruteResult);
-
                 totalDynTime += dynResult.getMetrics().getElapsedTimeMs();
                 totalDynSpace += dynResult.getMetrics().getEstimatedSpaceBytes();
-                totalBFTime += bruteResult.getMetrics().getElapsedTimeMs();
-                totalBFSpace += bruteResult.getMetrics().getEstimatedSpaceBytes();
+
+                // Run brute force only if both strings are short enough
+                LCSResult bruteResult;
+                if (s1.length() <= BRUTE_FORCE_CAP && s2.length() <= BRUTE_FORCE_CAP) {
+                    bruteResult = bruteAlg.computeLCS(label, s1, s2);
+                    totalBFTime += bruteResult.getMetrics().getElapsedTimeMs();
+                    totalBFSpace += bruteResult.getMetrics().getEstimatedSpaceBytes();
+                } else {
+                    // Skip and substitute with empty result
+                    bruteResult = new LCSResult(label, s1, s2, "-", new PerformanceMetrics());
+                }
+                bruteForceResults.add(bruteResult);
             }
         }
 

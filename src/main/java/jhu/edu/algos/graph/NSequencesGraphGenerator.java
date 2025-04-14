@@ -30,11 +30,11 @@ public class NSequencesGraphGenerator {
 
     /**
      * Generates a benchmark plot showing total comparisons vs number of sequences.
-     * Includes actual values and fitted curves for both dynamic and brute force methods.
+     * Includes actual values, fitted models, and baseline complexity curves.
      *
-     * @param dynResults List of dynamic programming LCS results.
-     * @param bfResults  List of brute force LCS results (nullable).
-     * @param outputPath PNG file path to save the generated chart.
+     * @param dynResults List of LCSResult from dynamic programming algorithm
+     * @param bfResults  List of LCSResult from brute force algorithm (nullable/skipped)
+     * @param outputPath Path to save PNG plot
      */
     public static void generateGraph(List<LCSResult> dynResults,
                                      List<LCSResult> bfResults,
@@ -46,27 +46,38 @@ public class NSequencesGraphGenerator {
             return;
         }
 
-        // === Aggregate comparison counts by number of sequences ===
+        // === Aggregate total comparisons for each N ===
         Map<Integer, Long> dynSums = new TreeMap<>();
         Map<Integer, Long> bfSums = new TreeMap<>();
+        Map<Integer, Long> dynTime = new TreeMap<>();
+        Map<Integer, Long> bfTime = new TreeMap<>();
 
         int dynIndex = 0;
-        int N = 4;  // Start from 4 sequences (choose 2 = 6 comparisons)
+        int N = 4;
 
         while (dynIndex < dynResults.size()) {
             int comparisons = N * (N - 1) / 2;
-            long dynTotal = 0;
-            long bfTotal = 0;
+            long dynTotal = 0, bfTotal = 0;
+            long dynTotalTime = 0, bfTotalTime = 0;
 
             for (int i = 0; i < comparisons && dynIndex < dynResults.size(); i++, dynIndex++) {
-                dynTotal += dynResults.get(dynIndex).getMetrics().getComparisonCount();
-                if (bfResults.get(dynIndex) != null) {
-                    bfTotal += bfResults.get(dynIndex).getMetrics().getComparisonCount();
+                LCSResult dyn = dynResults.get(dynIndex);
+                dynTotal += dyn.getMetrics().getComparisonCount();
+                dynTotalTime += dyn.getMetrics().getElapsedTimeMs();
+
+                LCSResult bf = bfResults.get(dynIndex);
+                if (bf != null) {
+                    bfTotal += bf.getMetrics().getComparisonCount();
+                    bfTotalTime += bf.getMetrics().getElapsedTimeMs();
                 }
             }
 
             dynSums.put(N, dynTotal);
-            if (bfTotal > 0) bfSums.put(N, bfTotal);
+            dynTime.put(N, dynTotalTime);
+            if (bfTotal > 0) {
+                bfSums.put(N, bfTotal);
+                bfTime.put(N, bfTotalTime);
+            }
 
             N++;
         }
@@ -88,7 +99,7 @@ public class NSequencesGraphGenerator {
         }
         double bfSlope = CurveFitter.fitLinear(bfX, bfY);
 
-        // === Print fit models ===
+        // === Print fit model equations to console ===
         System.out.printf("%n==== Fitted Scaling Models ====%n");
         System.out.printf("Dynamic Programming: T(N) ≈ %.4f · N²%n", dynSlope);
         if (!bfX.isEmpty()) {
@@ -98,7 +109,7 @@ public class NSequencesGraphGenerator {
         }
         System.out.println("================================\n");
 
-        // === Create chart series ===
+        // === Create plot series ===
         XYSeries dynActual = new XYSeries("Observed: Dynamic Programming");
         XYSeries bfActual = new XYSeries("Observed: Brute Force");
         XYSeries dynFitted = new XYSeries("Fitted: c·N² (Dyn)");
@@ -110,7 +121,7 @@ public class NSequencesGraphGenerator {
             double y = dynSums.get(n);
             dynActual.add(x, y);
             dynFitted.add(x, dynSlope * x * x);
-            baseline.add(x, 100.0 * x * x);  // Visual guide only
+            baseline.add(x, 100.0 * x * x); // baseline visual
         }
 
         for (Integer n : bfSums.keySet()) {
@@ -128,7 +139,7 @@ public class NSequencesGraphGenerator {
         dataset.addSeries(dynFitted);
         dataset.addSeries(bfFitted);
 
-        // === Create chart ===
+        // === Build chart ===
         JFreeChart chart = ChartFactory.createXYLineChart(
                 "LCS Total Comparisons vs Number of Sequences (N)",
                 "Number of Sequences (N)",
@@ -140,18 +151,20 @@ public class NSequencesGraphGenerator {
 
         chart.addSubtitle(new TextTitle("Scaling Analysis of LCS Algorithms with Increasing N"));
 
-        // === Configure aesthetics ===
+        // === Customize aesthetics ===
         XYPlot plot = chart.getXYPlot();
         XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
 
-        // Colorblind-safe palette
-        renderer.setSeriesPaint(0, new Color(0x1f78b4));  // Dyn actual
-        renderer.setSeriesPaint(1, new Color(0xe31a1c));  // BF actual
-        renderer.setSeriesPaint(2, new Color(0x999999));  // O(N²) theoretical
-        renderer.setSeriesPaint(3, new Color(0x33a02c));  // Dyn fitted
-        renderer.setSeriesPaint(4, new Color(0xff7f00));  // BF fitted
+        Color[] palette = {
+                new Color(0x1f78b4), // DP actual
+                new Color(0xe31a1c), // BF actual
+                new Color(0x999999), // O(N²)
+                new Color(0x33a02c), // DP fitted
+                new Color(0xff7f00)  // BF fitted
+        };
 
         for (int i = 0; i < dataset.getSeriesCount(); i++) {
+            renderer.setSeriesPaint(i, palette[i]);
             renderer.setSeriesLinesVisible(i, true);
             renderer.setSeriesShapesVisible(i, true);
         }
@@ -161,7 +174,7 @@ public class NSequencesGraphGenerator {
         plot.setDomainGridlinePaint(Color.LIGHT_GRAY);
         plot.setRangeGridlinePaint(Color.LIGHT_GRAY);
 
-        // === Annotate data points ===
+        // === Add annotations for each N point ===
         dynSums.forEach((n, val) -> {
             XYTextAnnotation note = new XYTextAnnotation("Dyn: " + val, n, val);
             note.setFont(new Font("SansSerif", Font.PLAIN, 9));
@@ -178,7 +191,32 @@ public class NSequencesGraphGenerator {
             plot.addAnnotation(note);
         });
 
-        // === Export PNG ===
+        // === Add fitted curve annotations (slopes) ===
+        if (!dynX.isEmpty()) {
+            XYTextAnnotation dynFitNote = new XYTextAnnotation(
+                    String.format("T(N) ≈ %.2f·N²", dynSlope),
+                    Collections.max(dynSums.keySet()) * 0.6,
+                    Collections.max(dynSums.values()) * 1.2
+            );
+            dynFitNote.setFont(new Font("SansSerif", Font.BOLD, 10));
+            dynFitNote.setPaint(new Color(0x33a02c));
+            dynFitNote.setTextAnchor(TextAnchor.BASELINE_LEFT);
+            plot.addAnnotation(dynFitNote);
+        }
+
+        if (!bfX.isEmpty()) {
+            XYTextAnnotation bfFitNote = new XYTextAnnotation(
+                    String.format("T(N) ≈ %.2f·N²", bfSlope),
+                    Collections.max(bfSums.keySet()) * 0.6,
+                    Collections.max(bfSums.values()) * 1.05
+            );
+            bfFitNote.setFont(new Font("SansSerif", Font.BOLD, 10));
+            bfFitNote.setPaint(new Color(0xff7f00));
+            bfFitNote.setTextAnchor(TextAnchor.BASELINE_LEFT);
+            plot.addAnnotation(bfFitNote);
+        }
+
+        // === Export final PNG ===
         try {
             ChartUtils.saveChartAsPNG(new File(outputPath), chart, 1200, 800);
             System.out.println("Graph saved to: " + outputPath);

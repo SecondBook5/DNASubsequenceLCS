@@ -10,19 +10,21 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Integration test for LScalingBenchmark.
+ * Integration test for LScalingBenchmark with dual-plot PNG outputs.
  *
- * This suite verifies:
- * - Correct generation of benchmark text output (.txt)
- * - Optional generation of performance graph (.png)
- * - Graceful handling of invalid command-line input
- * - Presence and format of key benchmark metrics in the output
+ * Verifies:
+ * - Output text generation
+ * - Proper plot splitting into dynamic and brute-force PNGs
+ * - Graceful error handling
+ * - Logical formatting of benchmark data
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class LScalingBenchmarkTest {
 
     private static final String TXT_PATH = "scaling_benchmark.txt";
-    private static final String PLOT_PATH = "scaling_plot.png";
+    private static final String PLOT_BASE = "scaling_plot.png";
+    private static final String DYNAMIC_PNG = "scaling_plot_dynamic.png";
+    private static final String BRUTEFORCE_PNG = "scaling_plot_bruteforce.png";
 
     /**
      * Deletes output files before each test run to ensure a clean environment.
@@ -30,33 +32,37 @@ public class LScalingBenchmarkTest {
     @BeforeEach
     void cleanBefore() throws IOException {
         Files.deleteIfExists(Path.of(TXT_PATH));
-        Files.deleteIfExists(Path.of(PLOT_PATH));
+        Files.deleteIfExists(Path.of(PLOT_BASE));
+        Files.deleteIfExists(Path.of(DYNAMIC_PNG));
+        Files.deleteIfExists(Path.of(BRUTEFORCE_PNG));
     }
 
     /**
-     * Deletes generated files after each test to prevent test pollution.
+     * Deletes output files after test completion to prevent test pollution.
      */
     @AfterEach
     void cleanAfter() throws IOException {
         Files.deleteIfExists(Path.of(TXT_PATH));
-        Files.deleteIfExists(Path.of(PLOT_PATH));
+        Files.deleteIfExists(Path.of(PLOT_BASE));
+        Files.deleteIfExists(Path.of(DYNAMIC_PNG));
+        Files.deleteIfExists(Path.of(BRUTEFORCE_PNG));
     }
 
     /**
      * Tests benchmark output with plotting disabled.
-     * Ensures .txt is created and .png is not.
+     * Ensures .txt is created and no PNG files are generated.
      */
     @Test
     void testRunWithoutPlotGeneratesTxtOnly() throws Exception {
-        // Run with minimal input range to keep test duration short
-        LScalingBenchmark.run(TXT_PATH, PLOT_PATH, false, 10, 20, 10, 2);
+        LScalingBenchmark.run(TXT_PATH, PLOT_BASE, false, 10, 20, 10, 2);
 
         assertTrue(Files.exists(Path.of(TXT_PATH)), "Expected benchmark .txt to be generated.");
-        assertFalse(Files.exists(Path.of(PLOT_PATH)), "No PNG should be generated without --plot.");
+        assertFalse(Files.exists(Path.of(DYNAMIC_PNG)), "No DP PNG should be generated without --plot.");
+        assertFalse(Files.exists(Path.of(BRUTEFORCE_PNG)), "No BF PNG should be generated without --plot.");
 
         List<String> lines = Files.readAllLines(Path.of(TXT_PATH));
         assertFalse(lines.isEmpty(), "Benchmark text output should not be empty.");
-        assertTrue(lines.get(0).contains("Scaling Benchmark Report"), "Missing benchmark report header.");
+        assertTrue(lines.get(0).contains("Benchmark Report"), "Missing benchmark report header.");
 
         // Check for metrics table headers
         boolean hasMetricHeaders = lines.stream().anyMatch(line ->
@@ -71,14 +77,15 @@ public class LScalingBenchmarkTest {
 
     /**
      * Tests benchmark output with plotting enabled.
-     * Ensures both .txt and .png are generated.
+     * Ensures both .txt and both .png files are created.
      */
     @Test
-    void testRunWithPlotGeneratesTxtAndPlot() throws Exception {
-        LScalingBenchmark.run(TXT_PATH, PLOT_PATH, true, 10, 20, 10, 2);
+    void testRunWithPlotGeneratesTxtAndDualPlots() throws Exception {
+        LScalingBenchmark.run(TXT_PATH, PLOT_BASE, true, 10, 20, 10, 2);
 
         assertTrue(Files.exists(Path.of(TXT_PATH)), "Expected .txt file to exist.");
-        assertTrue(Files.exists(Path.of(PLOT_PATH)), "Expected .png graph to be created.");
+        assertTrue(Files.exists(Path.of(DYNAMIC_PNG)), "Expected dynamic PNG to be created.");
+        assertTrue(Files.exists(Path.of(BRUTEFORCE_PNG)), "Expected brute force PNG to be created.");
     }
 
     /**
@@ -90,27 +97,23 @@ public class LScalingBenchmarkTest {
     }
 
     /**
-     * Verifies that brute force results are skipped at unsafe lengths.
-     * Expected: dashes ("-") in place of metrics, mixed with valid entries.
+     * Verifies that brute force results are skipped when sequences are too long.
      */
     @Test
     void testBruteForceSkipMarkersAppear() throws Exception {
-        // Efficient: Only L=10 and L=35, just 1 pair each
-        LScalingBenchmark.run(TXT_PATH, PLOT_PATH, false, 10, 35, 25, 1);
+        LScalingBenchmark.run(TXT_PATH, PLOT_BASE, false, 10, 35, 25, 1);
 
         List<String> lines = Files.readAllLines(Path.of(TXT_PATH));
 
-        // Expect skip markers at long lengths
+        // Expect '-' marker where BF is skipped
         boolean hasSkip = lines.stream().anyMatch(line ->
-                line.matches(".*\\|.*\\s+-\\s+.*-\\s*$")
-        );
+                line.matches(".*\\|.*\\s+-\\s+.*-\\s*$"));
 
-        // Expect valid brute force result at short lengths
+        // Expect some brute force results at shorter lengths
         boolean hasBF = lines.stream().anyMatch(line ->
-                line.matches(".*\\|.*\\d+.*\\|.*\\d+.*")
-        );
+                line.matches(".*\\|.*\\d+.*\\|.*\\d+.*"));
 
-        assertTrue(hasSkip, "Expected skipped brute force entries marked with '-' for longer sequences.");
-        assertTrue(hasBF, "Expected at least one measured brute force value for shorter sequences.");
+        assertTrue(hasSkip, "Expected skipped brute force entries marked with '-' for long L.");
+        assertTrue(hasBF, "Expected at least one measured brute force value for short L.");
     }
 }
