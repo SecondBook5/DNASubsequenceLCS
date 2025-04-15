@@ -1,7 +1,3 @@
-Certainly. Below is the revised **Section 1 – Overview** rewritten in a consistent **passive, instructive, and formal tone**, closely aligned with the style used in your `kmerHashing` README:
-
----
-
 # DNASubsequenceLCS
 
 ## 1. Overview
