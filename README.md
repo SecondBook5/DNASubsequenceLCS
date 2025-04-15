@@ -295,8 +295,8 @@ This project implements two contrasting algorithmic strategies for computing the
 
 | Algorithm         | Time Complexity      | Space Complexity    | Strategy Description                                  |
 |------------------|----------------------|---------------------|------------------------------------------------------|
-| Dynamic Programming | $ \mathcal{O}(mn) $  | $ \mathcal{O}(mn) $ | Classical 2D matrix-based method for LCS computation |
-| Brute Force       | $ \mathcal{O}(2^n) $ | Varies              | Exhaustive enumeration of all subsequence candidates |
+| Dynamic Programming | $\mathcal{O}(mn)$  | $\mathcal{O}(mn)$ | Classical 2D matrix-based method for LCS computation |
+| Brute Force       | $\mathcal{O}(2^n)$ | Varies              | Exhaustive enumeration of all subsequence candidates |
 
 Each pair of sequences is compared **exactly once** using both algorithms (unless brute force is skipped due to length constraints). The number of total comparisons is derived using the binomial formula:
 
