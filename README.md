@@ -171,7 +171,7 @@ java -cp target/Book_AJ_Lab3.jar jhu.edu.algos.Main \
 
 This will:
 - Load and validate sequences from the specified input file
-- Perform all $( \binom{n}{2} )$ pairwise comparisons
+- Perform all $\binom{n}{2}$ pairwise comparisons
 - Output the results to the target output file
 - Optionally print an LCS length matrix (symmetric, dynamic-only)
 
@@ -241,7 +241,7 @@ The system supports two primary execution workflows:
   - **N-scaling**: fixed sequence lengths, increasing number of sequence pairs  
     These inputs are processed in batch to analyze empirical growth curves for both algorithms.
 
-All pairwise evaluations are computed over $( \binom{n}{2})$ unique sequence pairs.
+All pairwise evaluations are computed over $\binom{n}{2}$ unique sequence pairs.
 
 ---
 
@@ -251,7 +251,7 @@ The system may be executed via Maven or directly from the `.jar` file. The follo
 
 | Mode       | Description                                                        |
 |------------|--------------------------------------------------------------------|
-| **compare**   | Runs all $( \binom{n}{2} )$ pairwise comparisons on a sequence set |
+| **compare**   | Runs all $\binom{n}{2}$ pairwise comparisons on a sequence set |
 | **benchmark** | Triggers the full benchmark suite (with optional plotting)         |
 
 Optional flags:
@@ -312,7 +312,7 @@ where n is the number of input sequences.
 
 The system automatically executes all pairwise comparisons across sequences provided in the input file. For example:
 
-- Given 4 sequences, the system evaluates $( \binom{4}{2} = 6 )$unique pairwise combinations.
+- Given 4 sequences, the system evaluates $\binom{4}{2} = 6$ unique pairwise combinations.
 - For each pair, both algorithms are executed (unless brute force is disabled or capped), and their outputs are written to the designated output file.
 
 This approach enables comparative benchmarking across multiple input types, supporting both biological test cases and synthetic benchmarks for algorithmic scaling.
@@ -351,7 +351,7 @@ Each line must:
 
 ### 5.2 Output Format
 
-The output file summarizes the LCS results across all **pairwise comparisons** (\( \binom{n}{2} \)) of the input sequences. The layout includes the following sections:
+The output file summarizes the LCS results across all **pairwise comparisons** $\binom{n}{2}$ of the input sequences. The layout includes the following sections:
 
 ---
 
@@ -570,11 +570,11 @@ Brute force execution is conditionally skipped when sequence length exceeds a co
 To empirically verify asymptotic behavior of each algorithm, two benchmark modes are included:
 
 - **L-Scaling**: Varies sequence length L, holds pair count constant.
-- **N-Scaling**: Varies number of sequence pairs $ \binom{n}{2} $, holds L fixed.
+- **N-Scaling**: Varies number of sequence pairs $\binom{n}{2}$, holds L fixed.
 
 Each benchmark reports total comparisons, time, space, and generates output plots:
-- $ \text{Dynamic: } T(L) \sim cL^2 $
-- $ \text{Brute Force: } T(L) \sim c2^L $
+- $\text{Dynamic: } T(L) \sim cL^2$
+- $\text{Brute Force: } T(L) \sim c2^L$
 
 The coefficient c is estimated via least squares regression using log-transformed fitting. This allows for comparative slope visualization of theoretical vs observed growth.
 
