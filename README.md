@@ -215,7 +215,7 @@ Two LCS algorithms are implemented in this system:
 - **Dynamic Programming**  
   A classical bottom-up approach with time complexity  
   $$
-  (T_{\text{DP}}(L_1, L_2) = O(L_1 \cdot L_2))
+  [\ (T_{\text{DP}}(L_1, L_2) = O(L_1 \cdot L_2)) \]
   $$
   where $( L_1 )$ and $( L_2 )$ are the lengths of the input sequences. This method guarantees optimal performance and is used for all scaling benchmarks and comparisons.
 
