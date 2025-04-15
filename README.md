@@ -214,16 +214,12 @@ Two LCS algorithms are implemented in this system:
 
 - **Dynamic Programming**  
   A classical bottom-up approach with time complexity  
-  $$
-  T_{\text{DP}}(L_1, L_2) = O(L_1 \cdot L_2)
-  $$
+  $$T_{\text{DP}}(L_1, L_2) = O(L_1 \cdot L_2)$$
   where $( L_1 )$ and $( L_2 )$ are the lengths of the input sequences. This method guarantees optimal performance and is used for all scaling benchmarks and comparisons.
 
 - **Brute Force Enumeration**  
   An exhaustive search of all common subsequences. Time complexity is exponential in the worst case:  
-  $$
-  T_{\text{BF}}(L) = O(2^{L_1 + L_2})
-  $$
+  $$T_{\text{BF}}(L) = O(2^{L_1 + L_2})$$
   This method serves as a conceptual baseline for measuring asymptotic divergence and is automatically disabled beyond a threshold of 25 characters per sequence.
 
 ---
@@ -300,9 +296,7 @@ This project implements two contrasting algorithmic strategies for computing the
 
 Each pair of sequences is compared **exactly once** using both algorithms (unless brute force is skipped due to length constraints). The number of total comparisons is derived using the binomial formula:
 
-$$
-\text{Number of Comparisons} = \binom{n}{2}
-$$
+$$\text{Number of Comparisons} = \binom{n}{2}$$
 
 where n is the number of input sequences.
 
@@ -648,12 +642,9 @@ The project can be executed either:
 
 ---
 ## 8. Author
-
-**Project**: Book_AJ_Lab3_LCS
-
-**Course**: Algorithms for Bioinformatics  
-**Institution**: Johns Hopkins University
-
-**Author**: AJ Book
-**Lab**: 3 – Longest Common Subsequence Algorithms
+- **Project**: Book_AJ_Lab3_LCS
+- **Course**: Algorithms for Bioinformatics  
+- **Institution**: Johns Hopkins University
+- **Author**: AJ Book
+- **Lab**: 3 – Longest Common Subsequence Algorithms
 ---
