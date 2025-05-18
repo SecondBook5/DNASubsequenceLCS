@@ -2,7 +2,7 @@
 
 ## 1. Overview
 
-**DNASubsequenceLCS** is a Java-based implementation of the **Longest Common Subsequence (LCS)** problem, developed as part of **Lab 3** for the *Algorithms for Bioinformatics* course. Two algorithmic strategies have been incorporated:
+**DNASubsequenceLCS** is a Java-based implementation of the **Longest Common Subsequence (LCS)** problem,  Two algorithmic strategies have been incorporated:
 
 - A **Dynamic Programming** method providing efficient polynomial-time computation
 - A **Brute Force Enumeration** method used as a reference baseline
@@ -642,13 +642,4 @@ The project can be executed either:
 - Using `mvn exec:java` for immediate IDE-integration
 - Or via `run_all.sh` for full pipeline automation
 
----
-
----
-## 8. Author
-- **Project**: Book_AJ_Lab3_LCS
-- **Course**: Algorithms for Bioinformatics  
-- **Institution**: Johns Hopkins University
-- **Author**: AJ Book
-- **Lab**: 3 – Longest Common Subsequence Algorithms
 ---
